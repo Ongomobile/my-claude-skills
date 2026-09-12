@@ -1,0 +1,344 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #E8703A; text-decoration: none; }
+    a:hover { color: #B8511F; }
+    @keyframes reelRise { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+    @keyframes reelFade { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes reelPop  { 0% { opacity: 0; transform: translateY(12px) scale(.95); } 100% { opacity: 1; transform: none; } }
+    @keyframes reelDraw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+    @keyframes reelStamp { 0% { opacity: 0; transform: rotate(-4deg) scale(1.5); } 55% { opacity: 1; } 100% { opacity: 1; transform: rotate(-4deg) scale(1); } }
+    @keyframes reelTape { 0% { opacity: 0; transform: rotate(-2deg) translateY(-10px); } 100% { opacity: 1; transform: rotate(-2deg) translateY(0); } }
+    @keyframes reelStrike { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+    @keyframes caret { 0%, 55% { opacity: 1; } 56%, 100% { opacity: .15; } }
+    @keyframes barGrow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  </style>
+</helmet>
+
+<div style="min-height: 100vh; width: 100%; background: radial-gradient(120% 90% at 50% 0%, #1c1814 0%, #100d0a 70%); display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 22px; padding: 28px 20px 40px; font-family: 'Inter', system-ui, sans-serif;">
+
+  <!-- ===== THE 1080x1920 REEL STAGE (scaled to fit) ===== -->
+  <div ref="{{ setWrapRef }}" style="position: relative; flex: none;">
+    <div ref="{{ setStageRef }}" data-document-role="page" data-label="REEL_TITLE" style="position: absolute; top: 0; left: 0; width: 1080px; height: 1920px; transform-origin: top left; overflow: hidden; border-radius: 26px; background: var(--bg); color: var(--text); box-shadow: 0 30px 80px rgba(0,0,0,.55); --bg: {{ bg }}; --surface: {{ surface }}; --text: {{ text }}; --sub: {{ sub }}; --accent: {{ accent }}; --accent-text: {{ accentText }}; --line: {{ line }}; --chip-bg: {{ chipBg }}; --chip-text: {{ chipText }}; --chip-border: {{ chipBorder }}; --logo-ring: {{ logoRing }};">
+
+      <!-- paper texture wash -->
+      <div style="position: absolute; inset: 0; background-image: url(./paper-texture.svg); background-size: 520px; opacity: {{ textureOpacity }}; mix-blend-mode: multiply; pointer-events: none;"></div>
+
+      <!-- persistent footer brand strip — EDIT the SERIES_LINE and #NN only -->
+      <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 150px; display: flex; align-items: center; gap: 22px; padding: 0 90px; z-index: 6;">
+        <img src="./logo.png" alt="" style="width: 78px; height: 78px; border-radius: 50%; background: var(--logo-ring); padding: 5px; flex: none;">
+        <div style="display: flex; flex-direction: column; line-height: 1.1;">
+          <span style="font-size: 27px; font-weight: 800; letter-spacing: -0.01em; color: var(--text);">AI Creators’ Workshop</span>
+          <span style="font-size: 23px; font-weight: 600; color: var(--sub);">SERIES_LINE &nbsp;·&nbsp; #NN</span>
+        </div>
+      </div>
+
+      <!-- ===================== SCENE 0 — HOOK (always first, always this shape) ===================== -->
+      <sc-if value="{{ s0 }}" hint-placeholder-val="{{ true }}">
+        <div style="position: absolute; inset: 0; padding: 150px 90px 230px; display: flex; flex-direction: column; justify-content: center; gap: 40px;">
+          <img src="./logo.png" alt="AI Creators' Workshop" style="position: absolute; top: 92px; left: 0; right: 0; margin: 0 auto; display: block; width: 340px; height: 340px; border-radius: 50%; background: var(--logo-ring); padding: 10px; box-shadow: 5px 5px 0 var(--line); animation: reelPop .55s cubic-bezier(.2,.7,.2,1) both;">
+          <div style="align-self: flex-start; animation: reelTape .5s ease both; background: var(--accent); color: var(--accent-text); font-size: 30px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; padding: 14px 26px; box-shadow: 6px 6px 0 var(--line); transform: rotate(-2deg);">AI Trick of the Day</div>
+          <div>
+            <div style="font-size: 108px; font-weight: 900; line-height: 0.92; letter-spacing: -0.04em; animation: reelRise .6s cubic-bezier(.2,.7,.2,1) both;">HOOK LINE ONE<br>HOOK LINE TWO</div>
+            <div style="height: 18px; width: 360px; max-width: 100%; margin-top: 26px; background: var(--accent); transform-origin: left center; animation: reelDraw .55s cubic-bezier(.2,.7,.2,1) both .55s;"></div>
+          </div>
+          <p style="margin: 18px 0 0; font-size: 52px; font-weight: 500; line-height: 1.25; color: var(--sub); animation: reelRise .6s ease both .35s;">One line that twists the hook.</p>
+        </div>
+      </sc-if>
+
+      <!-- ===================== SCENE 1 — PATTERN: tag + headline + chip row ===================== -->
+      <sc-if value="{{ s1 }}" hint-placeholder-val="{{ true }}">
+        <div style="position: absolute; inset: 0; padding: 170px 90px 210px; display: flex; flex-direction: column; justify-content: center; gap: 42px;">
+          <div style="align-self: flex-start; animation: reelTape .5s ease both; background: var(--accent); color: var(--accent-text); font-size: 27px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 12px 22px; transform: rotate(-1.5deg); box-shadow: 5px 5px 0 var(--line);">Tag text</div>
+          <div style="animation: reelRise .6s cubic-bezier(.2,.7,.2,1) both .1s;">
+            <div style="font-size: 138px; font-weight: 900; line-height: 0.95; letter-spacing: -0.04em;">Headline.</div>
+            <div style="height: 18px; width: 300px; margin-top: 24px; background: var(--accent); transform-origin: left center; animation: reelDraw .5s cubic-bezier(.2,.7,.2,1) both .5s;"></div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+            <!-- first 1-2 chips take the accent fill, the rest chip-bg. Stagger delay by .10s each. -->
+            <div style="font-size: 44px; font-weight: 700; color: var(--accent-text); background: var(--accent); border: 3px solid var(--accent); border-radius: 99px; padding: 16px 34px; animation: reelPop .45s ease both .45s;">chip one</div>
+            <div style="font-size: 44px; font-weight: 700; color: var(--chip-text); background: var(--chip-bg); border: 3px solid var(--chip-border); border-radius: 99px; padding: 16px 34px; animation: reelPop .45s ease both .55s;">chip two</div>
+          </div>
+          <p style="margin: 8px 0 0; font-size: 46px; font-weight: 600; line-height: 1.25; color: var(--sub); animation: reelRise .5s ease both 1.15s;">Payoff line with one <span style="color: var(--text); font-weight: 800;">bolded</span> word.</p>
+        </div>
+      </sc-if>
+
+      <!-- ===================== SCENE 2 — PATTERN: tag + headline + quote card with strike ===================== -->
+      <sc-if value="{{ s2 }}" hint-placeholder-val="{{ true }}">
+        <div style="position: absolute; inset: 0; padding: 180px 90px 210px; display: flex; flex-direction: column; justify-content: center; gap: 44px;">
+          <div style="align-self: flex-start; animation: reelTape .5s ease both; background: var(--accent); color: var(--accent-text); font-size: 27px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 12px 22px; transform: rotate(-1.5deg); box-shadow: 5px 5px 0 var(--line);">Tag text</div>
+          <div style="animation: reelRise .6s cubic-bezier(.2,.7,.2,1) both .1s;">
+            <div style="font-size: 138px; font-weight: 900; line-height: 0.95; letter-spacing: -0.04em;">Headline.</div>
+            <div style="height: 18px; width: 300px; margin-top: 24px; background: var(--accent); transform-origin: left center; animation: reelDraw .5s cubic-bezier(.2,.7,.2,1) both .5s;"></div>
+          </div>
+          <div style="animation: reelPop .55s cubic-bezier(.2,.7,.2,1) both .45s;">
+            <div style="border: 4px solid var(--line); border-radius: 18px; background: var(--surface); box-shadow: 10px 10px 0 var(--line); padding: 44px 46px;">
+              <div style="font-size: 62px; font-weight: 800; line-height: 1.28; color: var(--text);">
+                <span style="position: relative; display: inline-block;">Quoted line one<span style="position: absolute; left: -8px; right: -8px; top: 54%; height: 10px; background: var(--accent); transform-origin: left center; animation: reelStrike .4s ease both 1.0s;"></span></span><br>
+                <span style="position: relative; display: inline-block;">quoted line two.<span style="position: absolute; left: -8px; right: -8px; top: 54%; height: 10px; background: var(--accent); transform-origin: left center; animation: reelStrike .4s ease both 1.25s;"></span></span>
+              </div>
+            </div>
+          </div>
+          <p style="margin: 8px 0 0; font-size: 46px; font-weight: 600; line-height: 1.25; color: var(--sub); animation: reelRise .5s ease both 1.5s;">Payoff line, <span style="color: var(--text); font-weight: 800;">bolded end.</span></p>
+        </div>
+      </sc-if>
+
+      <!-- ===================== SCENE 3 — PATTERN: tag + headline + before/after bars ===================== -->
+      <sc-if value="{{ s3 }}" hint-placeholder-val="{{ true }}">
+        <div style="position: absolute; inset: 0; padding: 180px 90px 210px; display: flex; flex-direction: column; justify-content: center; gap: 44px;">
+          <div style="align-self: flex-start; animation: reelTape .5s ease both; background: var(--accent); color: var(--accent-text); font-size: 27px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 12px 22px; transform: rotate(-1.5deg); box-shadow: 5px 5px 0 var(--line);">Tag text</div>
+          <div style="animation: reelRise .6s cubic-bezier(.2,.7,.2,1) both .1s;">
+            <div style="font-size: 138px; font-weight: 900; line-height: 0.95; letter-spacing: -0.04em;">Headline.</div>
+            <div style="height: 18px; width: 300px; margin-top: 24px; background: var(--accent); transform-origin: left center; animation: reelDraw .5s cubic-bezier(.2,.7,.2,1) both .5s;"></div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 20px;">
+            <div style="font-size: 30px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--sub); animation: reelFade .4s ease both .45s;">Before label</div>
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <div style="height: 28px; width: 84%; border-radius: 4px; background: var(--chip-border); opacity: .55; transform-origin: left center; animation: barGrow .35s ease both .5s;"></div>
+              <div style="height: 28px; width: 86%; border-radius: 4px; background: var(--chip-border); opacity: .55; transform-origin: left center; animation: barGrow .35s ease both .58s;"></div>
+            </div>
+            <div style="font-size: 30px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-top: 18px; animation: reelFade .4s ease both .95s;">After label</div>
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <div style="height: 28px; width: 34%; border-radius: 4px; background: var(--accent); transform-origin: left center; animation: barGrow .35s ease both 1.0s;"></div>
+              <div style="height: 28px; width: 92%; border-radius: 4px; background: var(--accent); transform-origin: left center; animation: barGrow .35s ease both 1.08s;"></div>
+            </div>
+          </div>
+          <p style="margin: 4px 0 0; font-size: 46px; font-weight: 600; line-height: 1.25; color: var(--sub); animation: reelRise .5s ease both 1.4s;">Payoff line.</p>
+        </div>
+      </sc-if>
+
+      <!-- ===================== SCENE 4 — PATTERN: headline + terminal card + bullets ===================== -->
+      <sc-if value="{{ s4 }}" hint-placeholder-val="{{ true }}">
+        <div style="position: absolute; inset: 0; padding: 170px 90px 200px; display: flex; flex-direction: column; justify-content: center; gap: 44px;">
+          <div style="animation: reelRise .6s cubic-bezier(.2,.7,.2,1) both;">
+            <div style="font-size: 128px; font-weight: 900; line-height: 0.95; letter-spacing: -0.04em;">Payoff line one.<br>Payoff line two.</div>
+            <div style="height: 18px; width: 320px; margin-top: 24px; background: var(--accent); transform-origin: left center; animation: reelDraw .5s cubic-bezier(.2,.7,.2,1) both .5s;"></div>
+          </div>
+
+          <div style="position: relative; animation: reelPop .55s cubic-bezier(.2,.7,.2,1) both .4s;">
+            <div style="border: 4px solid var(--line); border-radius: 18px; overflow: hidden; background: var(--surface); box-shadow: 10px 10px 0 var(--line);">
+              <div style="height: 56px; display: flex; align-items: center; gap: 12px; padding: 0 24px; background: var(--surface); border-bottom: 2px solid var(--line);">
+                <span style="width: 18px; height: 18px; border-radius: 50%; background: #E8703A;"></span>
+                <span style="width: 18px; height: 18px; border-radius: 50%; background: #F5C24B;"></span>
+                <span style="width: 18px; height: 18px; border-radius: 50%; background: #4F7A4A;"></span>
+                <span style="margin-left: 14px; font-family: 'JetBrains Mono', monospace; font-size: 24px; color: var(--sub);">Claude Code</span>
+              </div>
+              <div style="padding: 34px 32px; font-family: 'JetBrains Mono', monospace; font-size: 40px; font-weight: 600; line-height: 1.4; color: var(--text);"><span style="color: var(--sub);">&gt;</span> context line<br><span style="color: var(--accent);">the command</span><span style="color: var(--accent); animation: caret 1s steps(1,end) infinite;">▌</span></div>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 24px;">
+            <div style="display: flex; align-items: center; gap: 24px; animation: reelRise .5s ease both .9s;">
+              <span style="width: 20px; height: 20px; background: var(--accent); flex: none;"></span>
+              <span style="font-size: 44px; font-weight: 600; color: var(--sub);">Bullet one</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 24px; animation: reelRise .5s ease both 1.05s;">
+              <span style="width: 20px; height: 20px; background: var(--accent); flex: none;"></span>
+              <span style="font-size: 44px; font-weight: 600; color: var(--sub);">Bullet two</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 24px; animation: reelRise .5s ease both 1.2s;">
+              <span style="width: 20px; height: 20px; background: var(--accent); flex: none;"></span>
+              <span style="font-size: 44px; font-weight: 600; color: var(--sub);">Bullet three</span>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ===================== SCENE 5 — CTA (always last, always this shape) ===================== -->
+      <sc-if value="{{ s5 }}" hint-placeholder-val="{{ true }}">
+        <div style="position: absolute; inset: 0; padding: 372px 90px 230px; display: flex; flex-direction: column; justify-content: center; gap: 38px;">
+          <img src="./logo.png" alt="AI Creators' Workshop" style="position: absolute; top: 104px; left: 0; right: 0; margin: 0 auto; display: block; width: 216px; height: 216px; border-radius: 50%; background: var(--logo-ring); padding: 8px; box-shadow: 5px 5px 0 var(--line); animation: reelPop .55s cubic-bezier(.2,.7,.2,1) both;">
+          <div style="align-self: flex-start; animation: reelStamp .6s ease both; color: var(--accent); border: 4px solid var(--accent); border-radius: 8px; font-size: 30px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; padding: 12px 24px; transform: rotate(-4deg);">Your turn</div>
+          <p style="margin: 0; font-size: 54px; font-weight: 600; line-height: 1.22; color: var(--sub); animation: reelRise .6s ease both .1s;">One line naming what they get.</p>
+          <div style="animation: reelRise .6s cubic-bezier(.2,.7,.2,1) both .35s;">
+            <div style="font-size: 132px; font-weight: 900; line-height: 0.92; letter-spacing: -0.04em;">Get the free<br>field guide.</div>
+            <div style="height: 18px; width: 320px; margin-top: 26px; background: var(--accent); transform-origin: left center; animation: reelDraw .5s cubic-bezier(.2,.7,.2,1) both .8s;"></div>
+          </div>
+          <p style="margin: 6px 0 0; font-size: 66px; font-weight: 800; letter-spacing: -0.02em; color: var(--accent); animation: reelRise .5s ease both .7s;">aicreatorsworkshop.com</p>
+          <p style="margin: 0; font-size: 34px; font-weight: 600; line-height: 1.5; color: var(--sub); animation: reelRise .5s ease both .95s;">TikTok @aicreatorsworkshop<br>Instagram @ai_app_creators_workshop</p>
+        </div>
+      </sc-if>
+
+    </div>
+  </div>
+
+  <!-- ===================== CONTROL BAR (not part of the reel) ===================== -->
+  <div style="width: 100%; max-width: 560px; display: flex; flex-direction: column; gap: 16px; flex: none;">
+
+    <div style="display: flex; gap: 6px;">
+      <sc-for list="{{ segments }}" as="seg" hint-placeholder-count="6">
+        <div onclick="{{ seg.jump }}" style="flex: 1; height: 6px; border-radius: 99px; background: rgba(245,239,226,.18); cursor: pointer; overflow: hidden;">
+          <div ref="{{ seg.setRef }}" style="height: 100%; width: 0%; background: #E8703A; border-radius: 99px;"></div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <button onclick="{{ togglePlay }}" style="width: 52px; height: 52px; border-radius: 50%; border: none; background: #E8703A; color: #1A1714; font-size: 22px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;">{{ playLabel }}</button>
+        <button onclick="{{ restart }}" style="height: 52px; padding: 0 18px; border-radius: 99px; border: 1.5px solid rgba(245,239,226,.35); background: transparent; color: #F5EFE2; font-size: 16px; font-weight: 600; cursor: pointer;">Restart</button>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 8px; background: rgba(245,239,226,.08); padding: 6px; border-radius: 99px;">
+        <button onclick="{{ pickWorkbench }}" style="height: 40px; padding: 0 16px; border-radius: 99px; border: none; cursor: pointer; font-size: 15px; font-weight: 700; background: {{ tabWorkbench }}; color: {{ tabWorkbenchText }};">Workbench</button>
+        <button onclick="{{ pickDark }}" style="height: 40px; padding: 0 16px; border-radius: 99px; border: none; cursor: pointer; font-size: 15px; font-weight: 700; background: {{ tabDark }}; color: {{ tabDarkText }};">Shop dark</button>
+        <button onclick="{{ pickPaint }}" style="height: 40px; padding: 0 16px; border-radius: 99px; border: none; cursor: pointer; font-size: 15px; font-weight: 700; background: {{ tabPaint }}; color: {{ tabPaintText }};">Paint</button>
+      </div>
+    </div>
+
+    <p style="margin: 4px 0 0; text-align: center; font-size: 13px; color: rgba(245,239,226,.45);">1080 × 1920 · 30s · screen-record the frame to export</p>
+  </div>
+
+</div>
+
+</x-dc>
+<script data-dc-script data-props='{"$preview": {"width": 620, "height": 1180}, "theme": {"editor": "enum", "options": ["workbench", "dark", "paint"], "default": "dark", "tsType": "string"}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    // ONE ENTRY PER SCENE, in ms. Must add up to the target runtime (30000 = 30s).
+    this.durations = [5000, 5000, 4800, 4800, 5200, 5200];
+    this.starts = [];
+    let acc = 0;
+    for (const d of this.durations) { this.starts.push(acc); acc += d; }
+    this.total = acc;
+    this.elapsed = 0;
+    this.startTs = null;
+    this.raf = null;
+    this.segRefs = [];
+    this.state = {
+      scene: 0,
+      playing: true,
+      theme: props.theme || 'dark',
+    };
+  }
+
+  THEMES = {
+    workbench: {
+      bg: '#F5EFE2', surface: '#EFE6D2', text: '#1A1714', sub: '#3C3631',
+      accent: '#E8703A', accentText: '#FFF6EE', line: '#1A1714',
+      chipBg: '#FFFFFFAA', chipText: '#1A1714', chipBorder: '#1A1714',
+      logoRing: '#FAF6EC', textureOpacity: 0.5,
+    },
+    dark: {
+      bg: '#1F1B17', surface: '#2C2620', text: '#F5EFE2', sub: '#B8AE9D',
+      accent: '#E8703A', accentText: '#1A1714', line: '#0E0B09',
+      chipBg: '#2C2620', chipText: '#F5EFE2', chipBorder: '#4A4138',
+      logoRing: '#2C2620', textureOpacity: 0.12,
+    },
+    paint: {
+      bg: '#E8703A', surface: '#F5EFE2', text: '#FFF6EE', sub: '#FCE3D3',
+      accent: '#1A1714', accentText: '#FFF6EE', line: '#7A2E0E',
+      chipBg: 'rgba(255,246,238,.16)', chipText: '#FFF6EE', chipBorder: 'rgba(255,246,238,.55)',
+      logoRing: '#FFF6EE', textureOpacity: 0.18,
+    },
+  };
+
+  componentDidMount() {
+    this.applyScale();
+    this._onResize = () => this.applyScale();
+    window.addEventListener('resize', this._onResize);
+    if (this.state.playing) this.start();
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this._onResize);
+    if (this.raf) cancelAnimationFrame(this.raf);
+  }
+
+  applyScale() {
+    if (!this.stageEl || !this.wrapEl) return;
+    const avail = Math.max(320, window.innerHeight - 230);
+    const availW = (this.wrapEl.parentElement.clientWidth || window.innerWidth) - 0;
+    const scale = Math.min(avail / 1920, availW / 1080, 0.95);
+    this.stageEl.style.transform = 'scale(' + scale + ')';
+    this.wrapEl.style.width = (1080 * scale) + 'px';
+    this.wrapEl.style.height = (1920 * scale) + 'px';
+  }
+
+  start() {
+    if (this.raf) cancelAnimationFrame(this.raf);
+    this.startTs = null;
+    this.raf = requestAnimationFrame(this.tick);
+  }
+
+  tick = (now) => {
+    if (this.startTs == null) this.startTs = now - this.elapsed;
+    this.elapsed = now - this.startTs;
+    let t = this.elapsed % this.total;
+    for (let i = 0; i < this.durations.length; i++) {
+      const ref = this.segRefs[i];
+      if (!ref) continue;
+      let pct = 0;
+      if (t >= this.starts[i] + this.durations[i]) pct = 100;
+      else if (t > this.starts[i]) pct = ((t - this.starts[i]) / this.durations[i]) * 100;
+      ref.style.width = pct + '%';
+    }
+    let scene = 0;
+    for (let i = 0; i < this.starts.length; i++) {
+      if (t >= this.starts[i]) scene = i;
+    }
+    if (scene !== this.state.scene) this.setState({ scene });
+    this.raf = requestAnimationFrame(this.tick);
+  };
+
+  renderVals() {
+    const th = this.THEMES[this.state.theme] || this.THEMES.dark;
+    const segments = this.durations.map((d, i) => ({
+      setRef: (el) => { this.segRefs[i] = el; },
+      jump: () => this.jumpTo(i),
+    }));
+    const tab = (name) => this.state.theme === name;
+    return {
+      ...th,
+      // ONE FLAG PER SCENE — add s6, s7 … if the reel has more scenes.
+      s0: this.state.scene === 0, s1: this.state.scene === 1, s2: this.state.scene === 2,
+      s3: this.state.scene === 3, s4: this.state.scene === 4, s5: this.state.scene === 5,
+      segments,
+      playLabel: this.state.playing ? '❚❚' : '▶',
+      togglePlay: () => this.togglePlay(),
+      restart: () => this.jumpTo(0),
+      pickWorkbench: () => this.setState({ theme: 'workbench' }),
+      pickDark: () => this.setState({ theme: 'dark' }),
+      pickPaint: () => this.setState({ theme: 'paint' }),
+      tabWorkbench: tab('workbench') ? '#E8703A' : 'transparent',
+      tabWorkbenchText: tab('workbench') ? '#1A1714' : '#B8AE9D',
+      tabDark: tab('dark') ? '#E8703A' : 'transparent',
+      tabDarkText: tab('dark') ? '#1A1714' : '#B8AE9D',
+      tabPaint: tab('paint') ? '#E8703A' : 'transparent',
+      tabPaintText: tab('paint') ? '#1A1714' : '#B8AE9D',
+      setStageRef: (el) => { this.stageEl = el; this.applyScale(); },
+      setWrapRef: (el) => { this.wrapEl = el; this.applyScale(); },
+    };
+  }
+
+  togglePlay() {
+    if (this.state.playing) {
+      if (this.raf) cancelAnimationFrame(this.raf);
+      this.raf = null;
+      this.setState({ playing: false });
+    } else {
+      this.setState({ playing: true }, () => this.start());
+    }
+  }
+
+  jumpTo(i) {
+    this.elapsed = this.starts[i];
+    this.startTs = null;
+    this.setState({ scene: i, playing: true }, () => this.start());
+  }
+}
+</script>
+</body>
+</html>

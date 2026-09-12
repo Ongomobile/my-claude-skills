@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your writing sounds like AI | AI Creators' Workshop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="__ASSET__">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --paper:#FAF6EC;--canvas:#F5EFE2;--canvas-warm:#EFE6D2;--canvas-deep:#E5D9BF;
+    --ink:#1A1714;--ink-2:#2A2520;--graphite:#3C3631;--pencil:#6B6259;--chalk:#9E9588;
+    --tape:#D8CFBE;--tape-soft:#E5DDCB;--shop-dark:#1F1B17;--on-dark:#F5EFE2;
+    --orange:#E8703A;--orange-deep:#B8511F;--orange-soft:#F5C2A6;
+    --blueprint:#2B5F8A;--blueprint-soft:#C9DCE9;
+  }
+  html{background:#F5EFE2;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{
+    font-family:"Inter",system-ui,sans-serif;background:var(--canvas);color:var(--ink);
+    font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;
+    background-image:url("__ASSET__");background-size:480px;background-blend-mode:multiply;
+    max-width:702px;margin:0 auto;padding:24px 0 60px;
+  }
+  h1,h2,h3,h4{font-weight:900;letter-spacing:-.025em;line-height:1.08;color:var(--ink)}
+  code{font-family:"JetBrains Mono",monospace;background:var(--canvas-warm);padding:1px 5px;border-radius:3px;font-size:.87em}
+  pre{background:var(--shop-dark);color:var(--on-dark);border-radius:8px;padding:13px 15px;
+      overflow-x:auto;font-size:11px;line-height:1.42;margin:6px 0 12px;white-space:pre-wrap}
+  pre code{background:none;padding:0;color:inherit;font-size:inherit}
+  em{font-style:italic}
+  a{color:inherit;text-decoration:none}
+  a.link{color:var(--blueprint);text-decoration:underline;text-underline-offset:2px;
+         text-decoration-thickness:1.5px}
+  .srcurl{display:block;margin-top:10px;font-size:15.5px;font-weight:800;
+          color:var(--blueprint);text-decoration:underline;text-underline-offset:3px;
+          text-decoration-thickness:2px;word-break:break-word;line-height:1.3}
+
+  /* ---------- cover ---------- */
+  .cover{height:100%;display:flex;flex-direction:column}
+  .cover-top{flex:none}
+  .cover-art{flex:1;min-height:0;margin:12px -15mm -15mm;overflow:hidden;position:relative}
+  .cover-art img{width:100%;height:100%;object-fit:cover;object-position:50% 60%;display:block}
+  .cover-logo{width:96px;height:96px;border-radius:50%;margin-bottom:18px}
+  .cover-eyebrow{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.2em;
+                 color:var(--orange-deep);margin-bottom:16px}
+  .cover-title{font-size:62px;line-height:.95;letter-spacing:-.04em}
+  .cover-title span{color:var(--orange)}
+  .cover-rule{height:10px;width:210px;background:var(--orange);margin:20px 0 16px}
+  .cover-sub{font-size:18px;line-height:1.42;color:var(--graphite);max-width:520px;font-weight:500}
+  .cover-foot{margin-top:16px;padding-top:13px;display:flex;justify-content:space-between;
+              border-top:2px solid var(--ink);font-size:14px;font-weight:700;color:var(--ink)}
+  .cover-foot span:last-child{color:var(--pencil);font-weight:600}
+
+  /* ---------- parts ---------- */
+  .part{margin-bottom:26px}
+  .part-head{display:flex;align-items:flex-start;gap:18px;border-top:3px solid var(--ink);
+             padding-top:16px;margin-bottom:15px;break-after:avoid;page-break-after:avoid}
+  .part-num{font-size:44px;font-weight:900;-webkit-text-stroke:2px var(--ink);color:transparent;
+            letter-spacing:-.04em;line-height:.85;flex-shrink:0}
+  .part-head h2{font-size:27px}
+  .part-head .lead{font-size:14px;color:var(--graphite);margin-top:5px}
+  .body p{color:var(--graphite);margin-bottom:10px}
+  .body ul{margin:0 0 14px;padding-left:1.3em;color:var(--graphite)}
+  .body li{margin-bottom:5px}
+  h3{font-size:17px;margin:18px 0 7px;break-after:avoid;page-break-after:avoid}
+  h4{font-size:15.5px;font-weight:800;margin-bottom:2px}
+  strong,b{color:var(--ink);font-weight:700}
+
+  .steps{display:grid;gap:9px;margin:6px 0 14px}
+  .step{display:grid;grid-template-columns:32px 1fr;gap:13px;background:var(--paper);
+        border:1.5px solid var(--ink);border-radius:7px;box-shadow:3px 3px 0 var(--ink);
+        padding:11px 14px;break-inside:avoid;page-break-inside:avoid}
+  .step .n{width:26px;height:26px;border-radius:50%;background:var(--orange);color:var(--ink);
+           font-weight:900;font-size:13px;display:flex;align-items:center;justify-content:center}
+  .step p{font-size:14px;color:var(--graphite);margin:0}
+
+  .note{display:flex;gap:12px;background:var(--blueprint-soft);border-left:4px solid var(--blueprint);
+        border-radius:5px;padding:13px 15px;margin:8px 0 16px;font-size:14px;color:var(--ink-2);
+        break-inside:avoid;page-break-inside:avoid}
+  .note.warm{background:#fbe7d8;border-left-color:var(--orange)}
+  .note b{color:var(--ink)}
+
+  table{width:100%;border-collapse:collapse;background:var(--paper);border:1.5px solid var(--ink);
+        border-radius:7px;overflow:hidden;margin:8px 0 16px;font-size:13.5px;
+        break-inside:avoid;page-break-inside:avoid}
+  th,td{text-align:left;padding:8px 11px;border-bottom:1px solid var(--tape);vertical-align:top}
+  th{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--pencil);
+     background:var(--canvas-warm);font-weight:800}
+  tr:last-child td{border-bottom:none}
+
+  .cta{background:var(--shop-dark);color:var(--on-dark);border-radius:10px;padding:30px 32px;
+       box-shadow:4px 4px 0 var(--ink);margin:22px 0 18px;break-inside:avoid;page-break-inside:avoid}
+  .cta-eyebrow{font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;
+               color:var(--orange);margin-bottom:12px}
+  .cta-line{font-size:30px;font-weight:900;letter-spacing:-.03em;line-height:1.05;color:var(--on-dark)}
+  .cta-url{margin-top:18px;font-size:23px;font-weight:800;color:var(--orange);letter-spacing:-.01em}
+
+  .pricenote{display:inline-block;margin-top:3px;font-size:11.5px;font-weight:700;color:var(--orange-deep)}
+  .fine{font-size:11.5px;color:var(--pencil);line-height:1.5;margin-top:18px}
+  .pbreak{page-break-after:always;break-after:page;height:0}
+  .part.last{margin-bottom:0}
+
+  /* ---------- print ---------- */
+  @page{size:Letter;margin:0}
+
+  /* Real pages. Once the page margin is zero (which full-bleed needs), Chrome
+     has no per-page inset to give. So the document is paginated by hand: one
+     .sheet per printed page, each carrying its own padding and cream ground. */
+  .sheet{width:216mm;height:279mm;padding:16mm 15mm 15mm;box-sizing:border-box;
+         background:var(--canvas);position:relative;overflow:hidden;
+         page-break-after:always;break-after:page;
+         -webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .sheet:last-child{page-break-after:auto;break-after:auto}
+  .sheet > .part:last-child{margin-bottom:0}
+  @media screen{
+    body{background:#cfc7b6;padding:24px 0;max-width:none}
+    .sheet{margin:0 auto 22px;box-shadow:0 6px 24px rgba(0,0,0,.22)}
+  }
+
+  @media print{
+    html{background:var(--canvas);
+         -webkit-print-color-adjust:exact;print-color-adjust:exact}
+    body{background:var(--canvas);max-width:none;margin:0;padding:0;
+         -webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .part{break-inside:auto}
+    .part-head,h3,h4{break-after:avoid}
+    .step,.note,table,.cta,pre{break-inside:avoid}
+    p{orphans:3;widows:3}
+  }
+</style>
+</head>
+<body>
+__SHEETS__
+</body>
+</html>

@@ -1,0 +1,432 @@
+{
+  "_readme": "Hand-labelled evaluation set for the credibility scorer. Real quotes marked with \"real\": true are drawn from the 26 Jul 2026 home-services run (see DigitalProducts-HomeServices-Summary.md); the rest are constructed to exercise the vendor-noise patterns named in RedditPainPointResearch-Method.md section 5. verdict: trust = weight heavily, weak = real but low-information, discount = treat as marketing. The scorer is graded against these, so edit them when the scorer is wrong about a case you care about — not the other way round.",
+  "thresholds": { "trust_min": 65, "discount_max": 35 },
+  "comments": [
+    {
+      "id": "f001",
+      "real": true,
+      "source": "reddit:r/CRM",
+      "author": "operator_anon",
+      "thread": "Do I even need a CRM for a 2-man cleaning company?",
+      "text": "Jobber and Housecall Pro are built for crews and you'd be paying for features you'll never open. I looked at both and bailed.",
+      "expect": { "verdict": "trust", "reasons": ["names_paid_tool_boundary", "first_person_evaluation"] }
+    },
+    {
+      "id": "f002",
+      "real": true,
+      "source": "forum:ContractorTalk",
+      "author": "framer_mike",
+      "thread": "Software for a one or two man outfit?",
+      "text": "Most apps are pretty costly for a one or two man outfit and have a lot of extra features. I tried three of them last year and went back to a spreadsheet and a whiteboard.",
+      "expect": { "verdict": "trust", "reasons": ["operational_specificity", "first_person_evaluation"] }
+    },
+    {
+      "id": "f003",
+      "real": true,
+      "source": "forum:LawnSite",
+      "author": "turf_and_dirt",
+      "thread": "What does Jobber actually do for $49?",
+      "text": "Jobber at $49/month handles quoting, scheduling, and invoicing, but it does not calculate actual job costs and you still need to estimate manually. That's the part that costs me money and no software I've paid for touches it.",
+      "expect": { "verdict": "trust", "reasons": ["names_paid_tool_boundary", "specific_price", "operational_specificity"] }
+    },
+    {
+      "id": "f004",
+      "real": true,
+      "source": "reddit:r/cleaningbusiness",
+      "author": "CleanOpsGuide",
+      "thread": "Why does switching software never fix anything?",
+      "text": "Nobody ever defines what a complete client record looks like. Owners switch tools twice and keep the same chaos both times because the record standard never existed. A disciplined spreadsheet beats the fancy app when that standard exists, and loses to it when it doesn't.",
+      "expect": { "verdict": "trust", "reasons": ["operational_specificity", "structural_insight"] }
+    },
+    {
+      "id": "f005",
+      "real": true,
+      "source": "reddit:r/cleaningbusiness",
+      "author": "commercial_janitorial",
+      "thread": "Scope creep on commercial contracts",
+      "text": "A job that looked profitable on paper can quickly become unprofitable. We picked up two extra restrooms and a break room over eight months without ever repricing. By the time I noticed we were at maybe 4% on that account.",
+      "expect": { "verdict": "trust", "reasons": ["operational_specificity", "numbers_with_consequences"] }
+    },
+    {
+      "id": "f006",
+      "real": true,
+      "source": "reddit:r/cleaningbusiness",
+      "author": "Rumblecard",
+      "thread": "Scope creep on commercial contracts",
+      "text": "How are you tracking estimated vs actual hours per area? Is that in a spreadsheet, or just something you eyeball from memory?",
+      "expect": { "verdict": "trust", "reasons": ["operator_question", "operational_specificity"] }
+    },
+    {
+      "id": "f007",
+      "real": true,
+      "source": "forum:LawnSite",
+      "author": "mow_and_go",
+      "thread": "Everyone here is undercharging",
+      "text": "Guys think they're at 35% profit but only bank 12%. You are not counting your own labor, your truck, or the drive time between stops. Run the numbers on one route for one week and it'll ruin your day.",
+      "expect": { "verdict": "trust", "reasons": ["numbers_with_consequences", "operational_specificity"] }
+    },
+    {
+      "id": "f008",
+      "real": true,
+      "source": "forum:CleaningTalk",
+      "author": "three_crew_ops",
+      "thread": "Walkthroughs and scope",
+      "text": "The clearer the scope is upfront, the easier it is to notice when the job starts drifting. We started photographing every room at the walkthrough and attaching it to the contract. Disputes basically stopped.",
+      "expect": { "verdict": "trust", "reasons": ["operational_specificity", "concrete_practice"] }
+    },
+    {
+      "id": "f009",
+      "real": true,
+      "source": "reddit:r/cleaningbusiness",
+      "author": "nightshift_lead",
+      "thread": "Scheduling around callouts",
+      "text": "If one person is out on a 3-person crew they can throw a whole night off. There's no slack in a route that tight and you can't just call someone at 9pm.",
+      "expect": { "verdict": "trust", "reasons": ["operational_specificity"] }
+    },
+    {
+      "id": "f010",
+      "real": true,
+      "source": "reddit:r/CRM",
+      "author": "solo_hvac",
+      "thread": "Do I even need a CRM for a 2-man cleaning company?",
+      "text": "Honestly I want a stripped down, no-monthly-fee dashboard instead of one more subscription. I'm at nine monthly tools and I can't tell you what half of them do anymore.",
+      "expect": { "verdict": "trust", "reasons": ["operational_specificity", "pricing_preference_signal"] }
+    },
+    {
+      "id": "f011",
+      "source": "forum:ContractorTalk",
+      "author": "remodel_dave",
+      "thread": "How do you handle change orders?",
+      "text": "Change orders in writing before anyone picks up a tool, no exceptions. I lost $6,400 on a bathroom in 2023 because I let the homeowner keep adding and told myself I'd true it up at the end. Never got it back.",
+      "expect": { "verdict": "trust", "reasons": ["numbers_with_consequences", "operational_specificity"] }
+    },
+    {
+      "id": "f012",
+      "source": "forum:LawnSite",
+      "author": "clay_soil_co",
+      "thread": "What actually eats your day?",
+      "text": "Driving. Not mowing. I mapped a week and 41% of clock time was windshield time between stops that were booked in whatever order the calls came in. Rerouting by zip got me back most of a day.",
+      "expect": { "verdict": "trust", "reasons": ["numbers_with_consequences", "operational_specificity"] }
+    },
+    {
+      "id": "f013",
+      "source": "reddit:r/smallbusiness",
+      "author": "pressure_wash_pnw",
+      "thread": "What quietly costs you the most time or money?",
+      "text": "Reworks from an unclear scope. Second is chasing net-30 invoices that go to 60. I built my own aging sheet in Sheets because QuickBooks reminders are too polite and my customers ignore them.",
+      "expect": { "verdict": "trust", "reasons": ["operational_specificity", "built_my_own"] }
+    },
+    {
+      "id": "f014",
+      "source": "forum:CleaningTalk",
+      "author": "susan_janitorial",
+      "thread": "Training new hires",
+      "text": "Our turnover is about 60% a year and every new person means I'm re-teaching the same twelve things. I wrote them down once, badly, and never kept it updated. That document is worth more than any app I've bought.",
+      "expect": { "verdict": "trust", "reasons": ["numbers_with_consequences", "operational_specificity"] }
+    },
+    {
+      "id": "f015",
+      "source": "reddit:r/Entrepreneur",
+      "author": "landscape_2gen",
+      "thread": "Second generation taking over the family business",
+      "text": "Dad priced everything from memory for 30 years and it worked because he knew. I don't know. When I asked him how he set the number on a retaining wall he said you just get a feel for it. That's not a system I can hire against.",
+      "expect": { "verdict": "trust", "reasons": ["operational_specificity", "structural_insight"] }
+    },
+    {
+      "id": "f016",
+      "source": "forum:ContractorTalk",
+      "author": "tile_guy_atl",
+      "thread": "Estimating software worth it?",
+      "text": "I've used Buildertrend for two years. It's good at the client portal and bad at anything to do with real cost. Materials markup is a field you type into, it doesn't know what you actually paid last month.",
+      "expect": { "verdict": "trust", "reasons": ["names_paid_tool_boundary", "first_person_evaluation"] }
+    },
+    {
+      "id": "f017",
+      "source": "reddit:r/cleaningbusiness",
+      "author": "airbnb_turnovers",
+      "thread": "Access codes and client preferences",
+      "text": "The thing that actually breaks is access. Gate codes, lockbox codes, which door, whether the dog is friendly. It lives in my phone and if I'm on vacation the crew is texting me at 7am from a driveway.",
+      "expect": { "verdict": "trust", "reasons": ["operational_specificity", "concrete_practice"] }
+    },
+    {
+      "id": "f018",
+      "source": "forum:LawnSite",
+      "author": "fert_and_squirt",
+      "thread": "Do you cost your jobs?",
+      "text": "Nobody in this thread is going to like this but if you don't know your cost per man-hour including windshield time, insurance, and equipment replacement reserve, you are guessing. Mine is $61. It took a weekend to work out and it changed what I bid.",
+      "expect": { "verdict": "trust", "reasons": ["numbers_with_consequences", "operational_specificity"] }
+    },
+    {
+      "id": "f019",
+      "source": "reddit:r/HVAC",
+      "author": "ductless_dan",
+      "thread": "Quoting tools",
+      "text": "ServiceTitan is excellent and it is also $400 a month and built for someone with dispatchers. I am the dispatcher. I'm not the customer they want and that's fine, but there's nothing between a legal pad and that.",
+      "expect": { "verdict": "trust", "reasons": ["names_paid_tool_boundary", "specific_price", "operational_specificity"] }
+    },
+    {
+      "id": "f020",
+      "source": "forum:CleaningTalk",
+      "author": "medical_offices_only",
+      "thread": "Bidding medical offices",
+      "text": "Medical is a different animal. Biohazard handling, HIPAA-adjacent stuff about what you can see on desks, and the compliance paperwork the property manager wants annually. I charge 30% over commercial for it and I'm still not sure that's enough.",
+      "expect": { "verdict": "trust", "reasons": ["operational_specificity", "numbers_with_consequences"] }
+    },
+    {
+      "id": "f021",
+      "source": "reddit:r/smallbusiness",
+      "author": "window_cleaning_ok",
+      "thread": "What quietly costs you the most time or money?",
+      "text": "Quoting. I still do it manually, drive out, walk it, write a number on a pad, then retype the whole thing at home at 9pm. Two hours per quote and I win maybe a third.",
+      "expect": { "verdict": "trust", "reasons": ["operational_specificity", "numbers_with_consequences"] }
+    },
+    {
+      "id": "f022",
+      "source": "forum:ContractorTalk",
+      "author": "ServiceBizManuals",
+      "thread": "SOPs for small crews",
+      "text": "I sell SOP templates, so discount me accordingly. But the thing I see most often is that people buy a template and never adapt the parts that are actually specific to how they work, so it sits unused. The generic 80% isn't the valuable part.",
+      "expect": { "verdict": "weak", "reasons": ["disclosed_vendor", "but_self_critical"] }
+    },
+    {
+      "id": "f023",
+      "source": "reddit:r/cleaningbusiness",
+      "author": "CleanFlowHQ",
+      "thread": "Scheduling headaches?",
+      "text": "We built CleanFlow specifically for this. Route optimization, crew callouts, client portal, all in one. Free for your first 3 clients. DM me and I'll set you up personally.",
+      "expect": { "verdict": "discount", "reasons": ["undisclosed_vendor", "username_matches_product", "dm_me_pitch"] }
+    },
+    {
+      "id": "f024",
+      "source": "reddit:r/cleaningbusiness",
+      "author": "growth_hacker_99",
+      "thread": "Scheduling headaches?",
+      "text": "Have you tried Jobber? Great tool, we love it. Here's my referral link, you get 20% off and so do I.",
+      "expect": { "verdict": "discount", "reasons": ["affiliate_link", "content_free"] }
+    },
+    {
+      "id": "f025",
+      "source": "reddit:r/passive_income",
+      "author": "sidehustle_stack",
+      "thread": "I found 3 micro-SaaS ideas from real complaints in trade subreddits",
+      "text": "1. Job costing calculator for landscapers. 2. SOP builder for cleaning companies. 3. Quote-to-invoice automation for contractors. All validated, all underserved. Full breakdown in my newsletter, link in bio.",
+      "expect": { "verdict": "discount", "reasons": ["idea_marketing", "listicle_shape", "content_marketing"] }
+    },
+    {
+      "id": "f026",
+      "source": "reddit:r/Entrepreneur",
+      "author": "buildinpublic_sam",
+      "thread": "What's the biggest problem in your cleaning business? Trying to build something useful",
+      "text": "Definitely scheduling! And invoicing. Would 100% pay for something that did both in one place.",
+      "expect": { "verdict": "discount", "reasons": ["answer_to_customer_discovery", "leading_question", "no_specificity"] }
+    },
+    {
+      "id": "f027",
+      "source": "reddit:r/Entrepreneur",
+      "author": "another_founder",
+      "thread": "What's the biggest problem in your cleaning business? Trying to build something useful",
+      "text": "Following this, building in a similar space. Feel free to DM, would love to compare notes on what you're hearing.",
+      "expect": { "verdict": "discount", "reasons": ["founder_networking", "content_free"] }
+    },
+    {
+      "id": "f028",
+      "source": "forum:LawnSite",
+      "author": "TurfPilotSoftware",
+      "thread": "Job costing spreadsheet anyone?",
+      "text": "Honestly a spreadsheet will get you 70% there but it breaks the moment you have more than one crew. That's exactly why we built TurfPilot — it does per-crew costing automatically. Happy to give forum members an extended trial.",
+      "expect": { "verdict": "discount", "reasons": ["undisclosed_vendor", "username_matches_product", "concern_then_pitch"] }
+    },
+    {
+      "id": "f029",
+      "source": "reddit:r/smallbusiness",
+      "author": "marketing_ninja_dm",
+      "thread": "What quietly costs you the most time or money?",
+      "text": "The real answer is lead generation. Most service businesses are one good funnel away from doubling revenue. I help home service companies with this — happy to do a free audit for anyone here.",
+      "expect": { "verdict": "discount", "reasons": ["undisclosed_vendor", "off_topic_pivot", "free_audit_pitch"] }
+    },
+    {
+      "id": "f030",
+      "source": "reddit:r/cleaningbusiness",
+      "author": "ai_tools_daily",
+      "thread": "Best AI tools for cleaning businesses in 2026",
+      "text": "Top 10 AI tools every cleaning business needs this year. 1. ChatGPT for quotes 2. Jobber for scheduling 3. Canva for flyers... (full list and my honest reviews on the blog)",
+      "expect": { "verdict": "discount", "reasons": ["listicle_shape", "content_marketing", "no_operator_signal"] }
+    },
+    {
+      "id": "f031",
+      "source": "forum:ContractorTalk",
+      "author": "estimating_pro_2024",
+      "thread": "How do you handle change orders?",
+      "text": "Great question and one I see constantly. The key is having a system. Most contractors fail here because they lack process. I've put together a free guide on exactly this — PM me for a copy.",
+      "expect": { "verdict": "discount", "reasons": ["platitudes", "lead_magnet_pitch", "no_specificity"] }
+    },
+    {
+      "id": "f032",
+      "source": "reddit:r/lawncare",
+      "author": "suburban_homeowner",
+      "thread": "How much should I pay for weekly mowing?",
+      "text": "My guy charges $45 for about a quarter acre and does a decent job. Seems fair to me but I have no idea what the going rate is.",
+      "expect": { "verdict": "discount", "reasons": ["wrong_audience_homeowner", "not_an_operator"] }
+    },
+    {
+      "id": "f033",
+      "source": "reddit:r/lawncare",
+      "author": "grass_is_greener22",
+      "thread": "How much should I pay for weekly mowing?",
+      "text": "Depends on your area honestly. Mine is $35 and I think that's cheap.",
+      "expect": { "verdict": "discount", "reasons": ["wrong_audience_homeowner", "no_specificity"] }
+    },
+    {
+      "id": "f034",
+      "source": "reddit:r/cleaningbusiness",
+      "author": "new_to_this_2026",
+      "thread": "Just started my cleaning company, any tips?",
+      "text": "Congrats on starting! Best advice is just be consistent and put in the work. The money follows.",
+      "expect": { "verdict": "discount", "reasons": ["platitudes", "no_specificity"] }
+    },
+    {
+      "id": "f035",
+      "source": "forum:CleaningTalk",
+      "author": "quietguy_ops",
+      "thread": "Software recommendations",
+      "text": "I use Jobber. It's fine.",
+      "expect": { "verdict": "weak", "reasons": ["real_operator_but_low_information"] }
+    },
+    {
+      "id": "f036",
+      "source": "reddit:r/cleaningbusiness",
+      "author": "midwest_maids",
+      "thread": "Software recommendations",
+      "text": "We switched off Housecall Pro last year. It was fine, just got expensive as we added people.",
+      "expect": { "verdict": "weak", "reasons": ["real_operator_but_low_information"] }
+    },
+    {
+      "id": "f037",
+      "source": "forum:LawnSite",
+      "author": "bagger_bob",
+      "thread": "What actually eats your day?",
+      "text": "Paperwork mostly. It's a pain.",
+      "expect": { "verdict": "weak", "reasons": ["real_operator_but_low_information"] }
+    },
+    {
+      "id": "f038",
+      "source": "reddit:r/smallbusiness",
+      "author": "generic_advice_guy",
+      "thread": "Pricing your services",
+      "text": "You should always know your numbers. Cost plus margin. It's business 101 and it's amazing how many people skip it.",
+      "expect": { "verdict": "weak", "reasons": ["true_but_generic", "no_specificity"] }
+    },
+    {
+      "id": "f039",
+      "source": "forum:ContractorTalk",
+      "author": "old_timer_carpentry",
+      "thread": "Estimating software worth it?",
+      "text": "Been doing this 34 years without software and I'm not starting now. Pencil, pad, and knowing your trade.",
+      "expect": { "verdict": "weak", "reasons": ["real_operator_but_low_information", "no_transferable_detail"] }
+    },
+    {
+      "id": "f040",
+      "source": "reddit:r/HVAC",
+      "author": "FieldOpsAI_founder",
+      "thread": "Anyone else drowning in dispatch?",
+      "text": "Yes and I got so frustrated I quit my install job and spent 18 months building something for it. It handles dispatch, tech routing, and parts inventory. I'd rather show you than pitch you — link in profile.",
+      "expect": { "verdict": "discount", "reasons": ["undisclosed_vendor", "origin_story_pitch", "username_signals_founder"] }
+    },
+    {
+      "id": "f041",
+      "source": "reddit:r/HVAC",
+      "author": "wrench_turner_tx",
+      "thread": "Anyone else drowning in dispatch?",
+      "text": "Two techs and me. The killer isn't dispatch itself, it's that a callback eats a slot I already sold. One warranty return in the morning and I'm rescheduling three paying calls. Nobody's software models that as a cost.",
+      "expect": { "verdict": "trust", "reasons": ["operational_specificity", "structural_insight"] }
+    },
+    {
+      "id": "f042",
+      "source": "forum:CleaningTalk",
+      "author": "contract_cleaner_uk",
+      "thread": "Estimated vs actual hours",
+      "text": "We log actual hours per site in a shared sheet and compare monthly against the bid hours. Three of our fourteen sites are underwater right now and two of those I would not have guessed. The one that surprised me is a small office we've had for six years.",
+      "expect": { "verdict": "trust", "reasons": ["numbers_with_consequences", "operational_specificity", "concrete_practice"] }
+    },
+    {
+      "id": "f043",
+      "source": "reddit:r/msp",
+      "author": "smallshop_msp",
+      "thread": "Do you track profitability per client?",
+      "text": "Per client, yes. Per ticket, no, and that's the gap. The client that looks great on MRR is the one generating 40% of our ticket volume, and I only found that out when a tech quit and told me on the way out.",
+      "expect": { "verdict": "trust", "reasons": ["numbers_with_consequences", "operational_specificity", "structural_insight"] }
+    },
+    {
+      "id": "f044",
+      "source": "forum:LawnSite",
+      "author": "PriceRightPro",
+      "thread": "Do you cost your jobs?",
+      "text": "This is the single most common failure I see in this industry. Most operators are flying blind. I've helped over 200 lawn care businesses fix their pricing — DM me if you want the framework I use.",
+      "expect": { "verdict": "discount", "reasons": ["undisclosed_vendor", "consultant_pitch", "unverifiable_social_proof"] }
+    },
+    {
+      "id": "f045",
+      "source": "reddit:r/Entrepreneur",
+      "author": "validate_first",
+      "thread": "How I validated my SaaS idea by reading 500 Reddit comments",
+      "text": "Step 1: find the subreddit. Step 2: search for complaint keywords. Step 3: count frequency. If a pain shows up 10+ times you have a business. Wrote the whole method up, link below.",
+      "expect": { "verdict": "discount", "reasons": ["idea_marketing", "listicle_shape", "content_marketing"] }
+    },
+    {
+      "id": "f046",
+      "source": "forum:ContractorTalk",
+      "author": "drywall_and_paint",
+      "thread": "Material price swings",
+      "text": "Drywall went up twice last year and both times I had signed bids I had to eat. Now every bid over 30 days has a materials escalation clause. Lost one job over it, kept my margin on four others.",
+      "expect": { "verdict": "trust", "reasons": ["operational_specificity", "numbers_with_consequences", "concrete_practice"] }
+    },
+    {
+      "id": "f047",
+      "source": "reddit:r/cleaningbusiness",
+      "author": "ops_nerd_cleaning",
+      "thread": "Spreadsheet or software?",
+      "text": "I built my own in Airtable over about three weekends. Not because Airtable is better than Jobber but because I finally had to decide what a client record contains, and that decision was the actual work. The tool was almost incidental.",
+      "expect": { "verdict": "trust", "reasons": ["built_my_own", "structural_insight", "operational_specificity"] }
+    },
+    {
+      "id": "f048",
+      "source": "forum:CleaningTalk",
+      "author": "SparkleSuite_Team",
+      "thread": "Spreadsheet or software?",
+      "text": "Spreadsheets work until they don't! Once you're past 5 clients you need real software. SparkleSuite starts at $29/mo and imports your existing spreadsheet in one click. First month free for CleaningTalk members.",
+      "expect": { "verdict": "discount", "reasons": ["undisclosed_vendor", "username_matches_product", "direct_pitch"] }
+    },
+    {
+      "id": "f049",
+      "source": "reddit:r/smallbusiness",
+      "author": "pool_service_fl",
+      "thread": "Subscription fatigue",
+      "text": "Counted it up: $312/month across seven tools for a business doing $180k. That's a route's worth of revenue going to software I half-use. I'd pay $200 once for something that did the three things I actually need.",
+      "expect": { "verdict": "trust", "reasons": ["numbers_with_consequences", "pricing_preference_signal", "operational_specificity"] }
+    },
+    {
+      "id": "f050",
+      "source": "forum:LawnSite",
+      "author": "irrigation_iowa",
+      "thread": "What actually eats your day?",
+      "text": "Winterization season we do 90 systems in six weeks and the whole thing runs off a paper list and my memory of which houses have the tricky backflow. If I got hit by a bus my wife could not run that season. That's the real problem and no app I've seen solves it.",
+      "expect": { "verdict": "trust", "reasons": ["operational_specificity", "structural_insight", "numbers_with_consequences"] }
+    },
+    {
+      "id": "f051",
+      "source": "reddit:r/cleaningbusiness",
+      "author": "honest_hybrid_op",
+      "thread": "Anyone using checklists?",
+      "text": "Full disclosure, I run a small cleaning company and I also sell a checklist pack on Etsy. On the operating side: the checklists that actually get used are the ones tied to a specific site, not the generic room-by-room ones. My own generic pack is the one nobody reorders.",
+      "expect": { "verdict": "weak", "reasons": ["disclosed_vendor", "but_operator_and_self_critical"] }
+    },
+    {
+      "id": "f052",
+      "source": "reddit:r/smallbusiness",
+      "author": "deleted_user",
+      "thread": "Pricing your services",
+      "text": "[removed]",
+      "expect": { "verdict": "discount", "reasons": ["no_content"] }
+    }
+  ]
+}

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{DOC_TITLE}} | {{PRODUCT_NAME}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="assets/logo-circular.png">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --paper:#FAF6EC;--canvas:#F5EFE2;--canvas-warm:#EFE6D2;--canvas-deep:#E5D9BF;
+    --ink:#1A1714;--ink-2:#2A2520;--graphite:#3C3631;--pencil:#6B6259;--chalk:#9E9588;
+    --tape:#D8CFBE;--tape-soft:#E5DDCB;--shop-dark:#1F1B17;--on-dark:#F5EFE2;
+    --orange:#E8703A;--orange-deep:#B8511F;--orange-soft:#F5C2A6;--orange-ink:#6B2E0F;
+    --blueprint:#2B5F8A;--blueprint-soft:#C9DCE9;--stamp:#C13F2E;
+    --tape-yellow:#F5C24B;--tape-yellow-deep:#D9A325;--success:#4F7A4A;
+  }
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"Inter",system-ui,sans-serif;background:var(--canvas);color:var(--ink);
+    font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;
+    background-image:url("assets/paper-texture.svg");background-size:480px;background-blend-mode:multiply;
+  }
+  h1,h2,h3,h4{font-weight:900;letter-spacing:-0.025em;line-height:1.08;color:var(--ink)}
+  a{color:var(--blueprint);text-underline-offset:3px;text-decoration-thickness:1.5px}
+  a:hover{color:var(--orange-deep)}
+  code{font-family:"JetBrains Mono",monospace;background:var(--canvas-warm);padding:2px 7px;border-radius:3px;font-size:.88em;color:var(--ink)}
+  pre{background:var(--shop-dark);color:var(--on-dark);border-radius:8px;padding:16px 18px;overflow-x:auto;font-size:13.5px;line-height:1.55;margin:8px 0 20px}
+  pre code{background:none;padding:0;color:inherit;font-size:inherit}
+  strong{color:var(--ink)}
+
+  .nav{position:sticky;top:0;z-index:100;background:rgba(245,239,226,.92);backdrop-filter:blur(12px);border-bottom:1.5px solid var(--tape)}
+  .nav-inner{max-width:960px;margin:0 auto;height:60px;padding:0 28px;display:flex;align-items:center;justify-content:space-between}
+  .nav-brand{display:flex;align-items:center;gap:10px}
+  .nav-brand img{width:30px;height:30px;border-radius:50%}
+  .nav-brand b{font-weight:900;font-size:14px;letter-spacing:-.02em}
+  .nav-tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--pencil)}
+  .back{font-size:12.5px;font-weight:700;color:var(--orange-deep);text-decoration:none;border:1.5px solid var(--tape);border-radius:999px;padding:5px 12px;white-space:nowrap}
+  .back:hover{border-color:var(--orange);color:var(--orange);background:var(--paper)}
+
+  .page{max-width:960px;margin:0 auto;padding:0 28px 120px}
+
+  .hero{padding:56px 0 40px;border-bottom:1.5px solid var(--ink);margin-bottom:56px}
+  .eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.18em;color:var(--orange-deep);margin-bottom:16px}
+  .hero h1{font-size:clamp(32px,5vw,52px);line-height:1.05;letter-spacing:-.03em;margin-bottom:18px}
+  .hero h1 span{color:var(--orange)}
+  .hero-sub{font-size:18px;color:var(--graphite);max-width:660px;line-height:1.6}
+  .meta{margin-top:16px;font-size:14px;color:var(--pencil)}
+
+  .part{margin-bottom:56px}
+  .part-head{display:flex;align-items:flex-start;gap:22px;border-top:3px solid var(--ink);padding-top:26px;margin-bottom:22px}
+  .part-num{font-size:54px;font-weight:900;-webkit-text-stroke:2px var(--ink);color:transparent;letter-spacing:-.04em;line-height:.85;flex-shrink:0}
+  .part-head h2{font-size:clamp(24px,3vw,30px)}
+  .part-head .lead{font-size:15.5px;color:var(--graphite);margin-top:8px;max-width:600px}
+  .body p{color:var(--graphite);margin-bottom:16px;max-width:680px}
+  .body ul,.body ol{margin:0 0 16px;padding-left:1.5em;color:var(--graphite);max-width:660px}
+  .body li{margin-bottom:8px}
+  h3{font-size:18px;margin:26px 0 10px}
+
+  .steps{display:grid;gap:14px;margin:8px 0 24px}
+  .step{display:grid;grid-template-columns:40px 1fr;gap:16px;background:var(--paper);border:1.5px solid var(--ink);border-radius:8px;box-shadow:3px 3px 0 var(--ink);padding:18px 20px}
+  .step .n{width:30px;height:30px;border-radius:50%;background:var(--orange);color:var(--ink);font-weight:900;font-size:15px;display:flex;align-items:center;justify-content:center}
+  .step h4{font-size:16.5px;font-weight:800;margin-bottom:3px}
+  .step p{font-size:15px;color:var(--graphite);margin:0;max-width:none}
+
+  .note{display:flex;gap:14px;background:var(--blueprint-soft);border-left:4px solid var(--blueprint);border-radius:6px;padding:16px 18px;margin:8px 0 20px;font-size:15px;color:var(--ink-2);max-width:680px}
+  .note.warm{background:#fbe7d8;border-left-color:var(--orange)}
+  .note b{color:var(--ink)}
+
+  table{width:100%;border-collapse:collapse;background:var(--paper);border:1.5px solid var(--ink);border-radius:8px;overflow:hidden;margin:8px 0 20px;font-size:15px}
+  th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--tape);vertical-align:top}
+  th{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--pencil);background:var(--canvas-warm)}
+  tr:last-child td{border-bottom:none}
+
+  .dark-panel{background:var(--shop-dark);color:var(--on-dark);border-radius:10px;padding:24px 26px;box-shadow:3px 3px 0 var(--ink);max-width:680px}
+  .dark-panel h2{color:var(--on-dark);font-size:20px;margin-bottom:10px}
+  .dark-panel p{color:var(--tape-soft);font-size:15.5px}
+  .dark-panel code{background:rgba(250,246,236,.14);color:var(--on-dark)}
+
+  .footer-note{border-top:1.5px solid var(--ink);margin-top:24px;padding-top:24px;color:var(--pencil);font-size:14px;max-width:680px}
+  @media(max-width:680px){.part-head{gap:14px}.part-num{font-size:40px}}
+</style>
+</head>
+<body>
+
+<!-- NAV: use .nav-tag on START-HERE ("Start Here"); use .back link to START-HERE.html on every other doc -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-brand"><img src="assets/logo-circular.png" alt="AI Creators' Workshop"><b>{{PRODUCT_NAME}}</b></div>
+    <span class="nav-tag">{{DOC_TAG}}</span>
+    <!-- or: <a class="back" href="START-HERE.html">&larr; Start Here</a> -->
+  </div>
+</nav>
+
+<div class="page">
+
+  <header class="hero">
+    <div class="eyebrow">AI Creators' Workshop &middot; {{DOC_EYEBROW}}</div>
+    <h1>{{HEADLINE_START}} <span>{{HEADLINE_ORANGE}}</span>{{HEADLINE_END}}</h1>
+    <p class="hero-sub">{{TWO_OR_THREE_SENTENCES_ON_WHAT_THIS_DOC_COVERS}}</p>
+    <!-- Optional, README only: <p class="meta"><strong>Stack:</strong> …</p> -->
+  </header>
+
+  <section class="part" id="{{ANCHOR}}">
+    <div class="part-head"><div class="part-num">1</div><div><h2>{{SECTION_TITLE}}</h2><p class="lead">{{ONE_LINE_LEAD}}</p></div></div>
+    <div class="body">
+      <p>Free-form prose, lists, and code go inside .body.</p>
+      <ul>
+        <li>Bullet one</li>
+        <li>Bullet two</li>
+      </ul>
+      <h3>Commands</h3>
+<pre><code>npm run dev      # comment aligned like this</code></pre>
+    </div>
+  </section>
+
+  <section class="part">
+    <div class="part-head"><div class="part-num">2</div><div><h2>{{STEPS_SECTION}}</h2><p class="lead">{{LEAD}}</p></div></div>
+    <div class="steps">
+      <div class="step"><span class="n">1</span><div>
+        <h4>{{STEP_TITLE}}</h4>
+        <p>{{STEP_BODY — steps may omit the h4 for terse lists}}</p>
+      </div></div>
+      <div class="step"><span class="n">2</span><div>
+        <h4>{{STEP_TITLE}}</h4>
+        <p>{{STEP_BODY}}</p>
+      </div></div>
+    </div>
+    <div class="note"><div><b>Tip:</b> blueprint note for helpful asides. Add class "warm" for cautions.</div></div>
+  </section>
+
+  <section class="part">
+    <div class="part-head"><div class="part-num">3</div><div><h2>I just want to...</h2><p class="lead">Jump straight to the answer.</p></div></div>
+    <table>
+      <tr><th>Task</th><th>Where to look</th></tr>
+      <tr><td>{{TASK}}</td><td><a href="{{DOC}}.html#{{ANCHOR}}">{{DOC_NAME}}, {{SECTION}}</a></td></tr>
+    </table>
+  </section>
+
+  <section class="part">
+    <div class="part-head"><div class="part-num">4</div><div><h2>The one thing that matters most</h2></div></div>
+    <div class="dark-panel">
+      <h2>{{CRITICAL_WARNING_HEADLINE}}</h2>
+      <p>{{WHY_IT_MATTERS_AND_WHAT_TO_DO}}</p>
+    </div>
+  </section>
+
+  <p class="footer-note">
+    Stuck on a step? Open this project in Claude Code and ask it to walk you through
+    the setup guide. It can read every file in here.
+  </p>
+
+</div>
+</body>
+</html>

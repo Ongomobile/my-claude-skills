@@ -1,0 +1,104 @@
+<!--
+  Reference wiring for the signup form, in plain HTML. Copy the markup and the
+  <script type="module"> into the site, then restyle to match it. In Vue or
+  React, the same calls go in onMounted/useEffect (createTurnstile), the submit
+  handler (submitSignup), and onBeforeUnmount/cleanup (turnstile.remove).
+
+  What this example gets right, and a rewrite should keep:
+  - A honeypot field hidden from people. A bot that fills it sees success and
+    nothing is sent. The script checks it too.
+  - Never fake success. If the request fails, say so.
+  - The thank-you screen offers the downloads directly.
+  - Error text is announced (aria-live) and the button blocks double submits.
+  - Inputs are 16px or larger, or iOS Safari zooms the page on focus.
+-->
+<form id="signup" class="signup" novalidate>
+  <label for="signup-name">Name</label>
+  <input id="signup-name" name="name" type="text" autocomplete="name" required />
+
+  <label for="signup-email">Email address</label>
+  <input id="signup-email" name="email" type="email" autocomplete="email" inputmode="email" required />
+
+  <!-- Turnstile draws here only when Cloudflare wants a click. -->
+  <div id="signup-turnstile" class="signup__turnstile"></div>
+
+  <button type="submit">Get the guide</button>
+
+  <!-- Honeypot: off-screen, skipped by keyboard and autofill. -->
+  <div aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden">
+    <label for="signup-company">Company</label>
+    <input id="signup-company" name="company" type="text" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <p id="signup-message" class="signup__message" aria-live="polite">No spam. Unsubscribe anytime.</p>
+</form>
+
+<div id="signup-done" class="signup__done" role="status" aria-live="polite" hidden>
+  <h3>Check your inbox</h3>
+  <p>Your email is on the way. If it is not there in a few minutes, look in your spam folder.</p>
+  <div id="signup-downloads"></div>
+</div>
+
+<script type="module">
+  import { submitSignup, isValidEmail, TURNSTILE_SITE_KEY } from './signup.js'
+  import { createTurnstile } from './turnstile.js'
+
+  const form = document.getElementById('signup')
+  const message = document.getElementById('signup-message')
+  const button = form.querySelector('button[type=submit]')
+  const box = document.getElementById('signup-turnstile')
+
+  // Start solving as soon as the form exists, so most people never wait.
+  const turnstileReady = createTurnstile(box, TURNSTILE_SITE_KEY, {
+    onVisibleChange: (visible) => box.classList.toggle('is-visible', visible),
+  }).catch((error) => {
+    console.error('[signup] Turnstile did not load:', error)
+    return null
+  })
+
+  const showError = (text) => {
+    message.textContent = text
+    message.classList.add('is-error')
+  }
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault()
+    if (button.disabled) return
+
+    const name = form.elements.name.value.trim()
+    const email = form.elements.email.value.trim()
+    if (!name) return showError('Please enter your name.')
+    if (!isValidEmail(email)) return showError('That does not look like an email address. Please check it.')
+
+    const done = (downloads) => {
+      const list = document.getElementById('signup-downloads')
+      list.replaceChildren(...downloads.map(({ label, url }) => {
+        const a = document.createElement('a')
+        a.href = url
+        a.textContent = label
+        a.className = 'signup__download'
+        return a
+      }))
+      form.hidden = true
+      document.getElementById('signup-done').hidden = false
+    }
+
+    // A filled honeypot is a bot: show success, send nothing.
+    if (form.elements.company.value) return done([])
+
+    button.disabled = true
+    button.textContent = 'Sending...'
+    const turnstile = await turnstileReady
+    try {
+      if (!turnstile) throw new Error('Turnstile unavailable')
+      const result = await submitSignup({ fields: { email, firstName: name }, turnstile })
+      done(result.downloads)
+    } catch (error) {
+      console.error('[signup] failed:', error)
+      turnstile?.reset() // tokens are single use
+      showError('Something went wrong on our end. Please try again.')
+      button.disabled = false
+      button.textContent = 'Get the guide'
+    }
+  })
+</script>

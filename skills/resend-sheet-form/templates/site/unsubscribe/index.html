@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Unsubscribe · FILL_ME Business Name</title>
+<!--
+  Every email footer links here as /unsubscribe/?u=TOKEN. Put this file where
+  the site serves it at that path (in Vite: public/unsubscribe/index.html).
+
+  WHY THERE IS A BUTTON. Corporate mail scanners (Outlook Safe Links and most
+  filtering gateways) open every link in a message before the person does. If
+  loading this page unsubscribed anyone, those scanners would unsubscribe the
+  whole list. Nothing happens until a person presses the button.
+
+  Replace every FILL_ME. Restyle the :root tokens to the brand; keep the button
+  text at 4.5:1 contrast on its background.
+-->
+<style>
+  :root {
+    --heading: #0b4630;
+    --text: #1f2933;
+    --muted: #52606d;
+    --bg: #f7faf8;
+    --button: #0a7a45;
+    --button-hover: #08603a;
+    --button-text: #ffffff;
+    --error: #b42318;
+    --link: #0a7a45;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    background: var(--bg);
+    color: var(--text);
+    font: 400 1.0625rem/1.6 system-ui, -apple-system, 'Segoe UI', sans-serif;
+  }
+  main { max-width: 32rem; margin: 0 auto; padding: 12vh 16px 48px; }
+  h1 {
+    font-size: clamp(1.75rem, 5vw, 2.25rem);
+    line-height: 1.15;
+    color: var(--heading);
+    margin: 0 0 12px;
+    text-wrap: balance;
+  }
+  p { margin: 0 0 16px; color: var(--muted); }
+  button {
+    min-height: 48px;
+    margin-top: 8px;
+    padding: 12px 26px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--button);
+    color: var(--button-text);
+    font: 700 1rem/1 inherit;
+    cursor: pointer;
+  }
+  button:hover { background: var(--button-hover); }
+  button:focus-visible { outline: 2px solid var(--heading); outline-offset: 2px; }
+  button:disabled { opacity: 0.6; cursor: wait; }
+  .error { margin-top: 16px; color: var(--error); font-weight: 600; min-height: 1.6em; }
+  .back { display: inline-block; margin-top: 24px; color: var(--link); font-weight: 600; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <section id="ask" hidden>
+    <h1>Stop FILL_ME Business Name emails?</h1>
+    <p>Press the button and we will take you off our list.</p>
+    <button type="button" id="confirm">Yes, unsubscribe me</button>
+    <p class="error" id="error" role="alert"></p>
+  </section>
+
+  <section id="done" hidden>
+    <h1>You're unsubscribed</h1>
+    <p>No more emails from us. Any download links you already have keep working.</p>
+  </section>
+
+  <section id="bad" hidden>
+    <h1>Nothing to do</h1>
+    <p>That link is missing its code. If you meant to unsubscribe, reply to any of our emails and we will take care of it.</p>
+  </section>
+
+  <noscript>
+    <h1>Unsubscribe</h1>
+    <p>This page needs JavaScript. You can also reply to any of our emails and we will take you off the list.</p>
+  </noscript>
+
+  <a class="back" href="/">Back to FILL_ME Business Name</a>
+</main>
+
+<script>
+  // Same URL as ENDPOINT in signup.js.
+  const ENDPOINT = ''
+
+  const token = new URLSearchParams(location.search).get('u') || ''
+  const show = (id) => { document.getElementById(id).hidden = false }
+
+  if (!/^[a-f0-9]{32}$/.test(token)) {
+    show('bad')
+  } else {
+    show('ask')
+    const button = document.getElementById('confirm')
+    const error = document.getElementById('error')
+
+    // text/plain skips the CORS preflight Apps Script cannot answer. A health
+    // check reply ({ service }) means Google lost the real reply after the
+    // script ran (see readReply in signup.js), so it counts as done.
+    const send = async () => {
+      const response = await fetch(ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'unsubscribe', token }),
+        redirect: 'follow',
+      })
+      const result = JSON.parse(await response.text())
+      return result.service ? { ok: true } : result
+    }
+
+    button.addEventListener('click', async () => {
+      button.disabled = true
+      button.textContent = 'Unsubscribing...'
+      error.textContent = ''
+      try {
+        if (!ENDPOINT) throw new Error('ENDPOINT is not set')
+        let result
+        try {
+          result = await send()
+        } catch (err) {
+          // Unsubscribing twice changes nothing, so one retry is safe.
+          console.warn('[unsubscribe] Reply lost, retrying once:', err)
+          result = await send()
+        }
+        if (!result.ok) throw new Error(result.error || 'rejected')
+        document.getElementById('ask').hidden = true
+        show('done')
+      } catch (err) {
+        console.error('[unsubscribe] failed:', err)
+        button.disabled = false
+        button.textContent = 'Yes, unsubscribe me'
+        error.textContent = 'Something went wrong on our end. Please try again, or reply to any of our emails and we will take care of it.'
+      }
+    })
+  }
+</script>
+</body>
+</html>

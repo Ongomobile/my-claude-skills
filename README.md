@@ -6,7 +6,7 @@ My portable Claude Code setup: skills, slash commands, and output style.
 
 | Folder | Goes to | What it is |
 |---|---|---|
-| `skills/` | `~/.claude/skills` | 13 skills |
+| `skills/` | `~/.claude/skills` | 14 skills |
 | `commands/` | `~/.claude/commands` | slash commands |
 | `output-styles/` | `~/.claude/output-styles` | the ELI5 style |
 

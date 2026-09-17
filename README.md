@@ -31,7 +31,7 @@ Which form skill? Use `sheet-form` when only the owner needs an email. Use `rese
 
 | Skill | What it does | Say something like |
 |---|---|---|
-| `acw-reel` | Makes a branded AI Creators' Workshop vertical reel (1080x1920 MP4) in the light or dark theme. | "Make a reel about this AI trick" |
+| `acw-reel` | Makes a branded AI Creators' Workshop vertical reel (1080x1920 MP4) in the light or dark theme. Can show an app being tapped through on a phone, and recut a reel for clients. | "Make a reel about this AI trick" |
 | `guide-to-pdf` | Turns a guide or notes into a branded AI Creators' Workshop giveaway PDF, with a cover image prompt and a social post. | "Turn this into a giveaway PDF" |
 | `productize` | Packages an app or tool as an AI Creators' Workshop product: branded instruction docs, license, assets, delivery zip. | "Productize this tool" |
 | `humanizer` | Rewrites text so it stops sounding AI-written, keeping the meaning and facts the same. | "Humanize this" |

@@ -19,6 +19,7 @@ Three moving parts, all in this skill:
 | `scripts/make-render.py` | Bakes one theme into a scrubbable standalone page. |
 | `scripts/capture.mjs` | Drives headless Chrome, grabs all 900 frames. |
 | `scripts/build.sh` | Runs all of it and encodes the MP4s. |
+| `templates/phone-demo.html` | Optional scene type for reels about an app: the app on a phone, tapped through step by step. A reference to copy pieces from, not a page. |
 
 Frames come from Chrome, not from ffmpeg text filters. **This machine's ffmpeg has no `drawtext`** (built without libfreetype), so never try to draw text with ffmpeg. Chrome renders, ffmpeg only encodes.
 
@@ -79,7 +80,7 @@ Edit only inside the `<sc-if>` blocks, the footer strip, and the `durations` arr
 
 **Fixed scene shapes.** Scene 0 is always the hook (big logo, "AI Trick of the Day" tape, two-line headline, orange rule, twist line). The last scene is always the CTA (small logo, "Your turn" stamp, lead-in, headline, orange rule, URL, socials). Do not redesign these two; only change their words.
 
-**Middle scenes** pick from the patterns already in the template: chip row, quote card with animated strike, before/after bars, terminal card with bullets. Reuse and re-word them rather than inventing new layouts.
+**Middle scenes** pick from the patterns already in the template: chip row, quote card with animated strike, before/after bars, terminal card with bullets. For a reel about an app, add the **phone demo** from `templates/phone-demo.html` (see "Phone demo scenes" below). Reuse and re-word them rather than inventing new layouts.
 
 **The footer strip** appears on every scene. Change only the second line: `<series name> · #NN`. Bump the number for each new reel in a series.
 
@@ -90,6 +91,23 @@ Edit only inside the `<sc-if>` blocks, the footer strip, and the `durations` arr
 - **Text length.** Headlines under 6 words. Sub-lines under 12. Long copy will not fit and will not be read.
 - **Stagger.** Animate elements in with `.10s` to `.15s` gaps. Everything landing at once looks cheap; more than ~1.5s of stagger wastes the scene.
 - **Chips.** First one or two take the accent fill, the rest `chip-bg`. That is what makes the eye land in the right place.
+
+### Phone demo scenes (showing an app)
+
+Use when the reel is about something people use on a screen: a booking calendar, an estimator, a tracker. It shows the real flow instead of describing it. Two phone scenes at most, usually "tap through" then "result".
+
+- **Recreate the app, don't screenshot it.** Rebuild its screen in HTML inside `.ph-screen`, from the app's real markup and styles. Use sample data only (a sample business, "Sarah"), never real customer details. It stays crisp at 1080 wide and scrubs frame-exact.
+- **Draw at 2x the app's phone layout.** A 375px mobile screen becomes about 750px: body text 30px or more, buttons 84px tall or more. Reels are watched about 390px wide, so check by downscaling a frame to 390px. If you can't read it there, it's too small.
+- **Placement.** Tag, then a two-line headline at ~100px, then the phone (`.ph-frame`, 780x1010) centered. Its top lands near 530px and its bottom must stay above 1570px, clear of the bottom social UI and the footer strip.
+- **Timing (scene 5000-5400ms).** The phone is in by 0.9s. First tap no earlier than 1.9s. Typed text finishes at least 0.4s before the tap that submits. The result lands by about 3.8s and holds at least 1.2s.
+- **Taps.** Put a `.ph-ring` inside the tapped element (no coordinate math) and give the element `pressIn` (tiles) or `btnPress` (sticker buttons).
+- **Two animations, one property.** The later animation's `both` fill applies even before its delay and overrides the earlier one. So when an element pops in *and* gets pressed, use `forwards` on the press. For fade in then out, nest two elements: the outer fades in with `both`, the inner fades out with `forwards`.
+- **State changes** (a selected day, a button label swap) are keyframes with `both` fill, so frames before the change show the old state.
+- **Typing.** `typeIn` with `steps(<number of characters>, end)`.
+
+### Client-facing cut
+
+The same reel can be recut for clients instead of workshop members. Swap `logo.png` for a square photo in the hook, CTA and footer `<img>` tags, change the footer's brand line and series line, and re-word the hook tape and CTA stamp ("For service businesses", "Want one?"). The fixed shapes stay the same.
 
 ### Copy voice
 
@@ -128,3 +146,5 @@ Chrome, node, python3, ffmpeg with libx264. All present on this machine. Nothing
 ## Worked example
 
 `Reels/humanizer-reel/` is a finished reel built with this system: six scenes, 30s, both themes. Read its `Main.dc.html` when you want to see the patterns filled in with real copy.
+
+`Reels/booking-calendar-reel/` uses the phone demo (scenes 2 and 3) and a generic booking page struck through in the quote card (scene 1). `Reels/booking-calendar-clients-reel/` is its client-facing cut.

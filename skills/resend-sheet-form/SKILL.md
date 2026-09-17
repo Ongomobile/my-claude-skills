@@ -1,6 +1,6 @@
 ---
 name: resend-sheet-form
-description: Guided, step-by-step build of a website signup form that saves each person to a Google Sheet, emails them instantly through Resend from the client's own domain (optionally with download links to files hosted on Cloudflare R2), notifies the owners of every signup and unsubscribe, and handles unsubscribe properly (footer link page plus Gmail/Yahoo one-click), with Cloudflare Turnstile bot protection and DKIM/SPF/DMARC set up. Use whenever the user wants a lead magnet, free guide or PDF download for an email, coupon delivery, newsletter or mailing list signup, waitlist that emails people, "form to Resend", "form to Google Sheet with emails", "send a download link when someone signs up", or wants to repeat the Green Papaya signup setup for another site or client. Prefer this over sheet-form whenever the emails must come from the client's domain, include downloads, or need unsubscribe; use sheet-form for a simple contact form that only emails the owner.
+description: Guided, step-by-step build of a website signup form that saves each person to a Google Sheet, emails them instantly through Resend from the client's own domain (optionally with download links to files hosted on Cloudflare R2), notifies the owners of every signup and unsubscribe, handles unsubscribe properly (footer link page plus Gmail/Yahoo one-click), and lets the owners send list emails (broadcasts) to every active subscriber by writing them in the Sheet, paced to Resend's free daily limit, with Cloudflare Turnstile bot protection and DKIM/SPF/DMARC set up. Use whenever the user wants a lead magnet, free guide or PDF download for an email, coupon delivery, newsletter or mailing list signup, waitlist that emails people, a newsletter or "email my whole list" feature, "form to Resend", "form to Google Sheet with emails", "send a download link when someone signs up", or wants to repeat the Green Papaya signup setup for another site or client. Also use to add list emails (broadcasts) to a signup system already built with this skill. Prefer this over sheet-form whenever the emails must come from the client's domain, include downloads, or need unsubscribe; use sheet-form for a simple contact form that only emails the owner.
 user-invocable: true
 ---
 
@@ -16,11 +16,47 @@ form ──POST──> Apps Script Web App ──> Google Sheet (Signups tab)
                    └──> Resend ──> owners: "New signup" / "Unsubscribed"
 email footer ──> <site>/unsubscribe/?u=TOKEN ──button──> Apps Script ──> row marked unsubscribed
 Gmail/Yahoo one-click (List-Unsubscribe header) ──POST──> Apps Script
+Broadcasts tab (owner sets Status) ──on edit / hourly──> Apps Script ──> Resend ──> active subscribers, paced
 ```
 
 Everything is free-tier: Apps Script, Sheets, Resend free plan, R2, Turnstile.
 It requires the site's domain to be on Cloudflare DNS (R2 custom domain,
 Turnstile, DNS records). If it is not, say so in Phase 0 before building.
+
+## Requirements
+
+- **Accounts the owner creates and keeps:** Google (Sheet and Apps Script),
+  Resend, and Cloudflare holding the domain. Each build uses the client's own
+  accounts, never Claude's or the builder's.
+- **Node** for the two test scripts.
+- **Claude in Chrome (recommended, not required).** With the extension, Claude
+  does the dashboard work itself in its own tab group, signed in as the owner:
+  R2, Turnstile, DNS, and loading, deploying and running Apps Script. Ask in
+  Phase 0 whether it is installed and connected.
+
+### Without Claude in Chrome
+
+Everything still works. Claude writes the code, runs the tests, and checks the
+live pieces from the terminal (`curl`, `dig`); the person does every dashboard
+step by hand from `click-paths.md`, one step at a time, and says when each is
+done. Differences:
+
+- **Apps Script:** instead of injecting files, open each file in the editor,
+  select all, and paste the local file in (copy it with `pbcopy < Config.gs`
+  on a Mac). Pasting is safe; typing code is not (gotcha 5). Check the
+  editor's last line number matches `wc -l` of the file. Then Deploy and
+  Run exactly as written. Google's `clasp` CLI can push the files and redeploy
+  from the terminal instead, but it needs its own sign-in, and running
+  `setupBroadcasts` and authorizing still happen in the editor.
+- **R2:** the person creates the bucket and drags the files in, or Claude uses
+  Cloudflare's `wrangler` CLI after the person runs `wrangler login`.
+- **Turnstile and DNS:** by hand in the Cloudflare dashboard. The person pastes
+  the public site key into chat; Claude verifies DNS with `dig`.
+- **Checks Claude would read on screen** (Resend's delivered list, the
+  Triggers page, the Sheet tabs): ask the person to look and report back, or
+  send a screenshot.
+
+It takes longer and has more hand-offs, so say that up front.
 
 ## Bundled files
 
@@ -28,14 +64,16 @@ Turnstile, DNS records). If it is not, say so in Phase 0 before building.
 |---|---|
 | `templates/apps-script/Config.gs` | The only backend file edited per project: brand, addresses, email copy, downloads, colors |
 | `templates/apps-script/Code.gs`, `Emails.gs` | The engine. Do not edit per project |
+| `templates/apps-script/Broadcasts.gs` | List emails written in the Sheet: tabs, triggers, pacing, log. Do not edit per project; settings live in `BROADCASTS` in Config.gs |
 | `templates/apps-script/appsscript.json` | Pins OAuth scopes and web app access. Set `timeZone` per client |
 | `templates/site/signup.js` | Framework-free client: `submitSignup()` with Google's lost-reply retry |
 | `templates/site/turnstile.js` | `createTurnstile()`: load, token wait, reset |
 | `templates/site/signup-form.html` | Reference form wiring (plain HTML); port to the site's stack |
 | `templates/site/unsubscribe/index.html` | The footer link's landing page |
 | `scripts/test-backend.js` | Runs the backend in Node against fake Google services, 34 checks |
+| `scripts/test-broadcasts.js` | Runs Broadcasts.gs the same way: setup, test, pacing, resume, unsubscribes, outages, 47 checks |
 | `references/click-paths.md` | Exact dashboard clicks and the wording to hand the owner |
-| `references/gotchas.md` | 23 things that broke on the first build. Read before Phase 5 |
+| `references/gotchas.md` | 28 things that broke or bite. Read before Phase 5 |
 
 ## How to run this with the user
 
@@ -43,7 +81,8 @@ Turnstile, DNS records). If it is not, say so in Phase 0 before building.
 - **End every phase with a checkpoint:** what was done, what was verified and
   how, and what is next. Wait for a go-ahead before the next phase.
 - **Claude does:** code, tests, commits, and dashboard work in its own Chrome
-  tab group (R2, Turnstile, DNS, loading and deploying Apps Script).
+  tab group (R2, Turnstile, DNS, loading and deploying Apps Script). Without
+  Claude in Chrome, the dashboard work moves to the person; see Requirements.
 - **The owner does, with exact clicks from `click-paths.md`:** creating
   accounts, adding payment methods, signing in, Google's authorization screen,
   creating and pasting secret keys, and the live signup test. Claude never
@@ -55,6 +94,8 @@ Turnstile, DNS records). If it is not, say so in Phase 0 before building.
 
 Ask one at a time; skip anything already known from the project or earlier chat.
 
+0. **Claude in Chrome.** Is the extension installed and connected? If not,
+   explain the by-hand path (Requirements) and confirm they are fine with it.
 1. **Site and stack.** Which repo/folder, what framework, where it is hosted,
    and is the domain's DNS on Cloudflare? Which Cloudflare account holds it?
 2. **Sheet.** New or existing Sheet, and **which Google account owns it**? The
@@ -68,7 +109,11 @@ Ask one at a time; skip anything already known from the project or earlier chat.
 7. **Resend.** Whose account? Recommend one the client owns. Emails will come
    from `hello@mail.<domain>` unless they want another name.
 8. **Follow-up emails.** Default off (drafts stay in `sequenceDraft`).
-9. **Email copy.** Draft the subject, intro, per-file text and sign-off in the
+9. **List emails (broadcasts).** Default on. Who will write them (their Sheet
+   access), and does anything else send through the same Resend account? That
+   sets `BROADCASTS.dailyLimit`: 60 on a free account of its own, lower if
+   shared, higher on a paid plan.
+10. **Email copy.** Draft the subject, intro, per-file text and sign-off in the
    brand's voice, show it, and get approval now. Changing it later costs a
    redeploy.
 
@@ -83,7 +128,8 @@ Checkpoint: summarize the answers as a short table and confirm.
    Add a second entry to OFFERS only if the site has more than one form.
 3. Run `node <skill>/scripts/test-backend.js <project>/apps-script`. It fails
    on any leftover `FILL_ME` and notes the unset `webAppUrl` (fine for now).
-   All other checks must pass.
+   All other checks must pass. Then
+   `node <skill>/scripts/test-broadcasts.js <project>/apps-script`: all pass.
 
 Checkpoint: config values, the approved copy, test output.
 
@@ -113,13 +159,15 @@ Checkpoint: site key recorded in `signup.js`; owner has the secret.
 
 Read `references/gotchas.md` first. Then `click-paths.md` §4:
 
-1. Create the project in the Sheet owner's account, load the four files by
+1. Create the project in the Sheet owner's account, load the five files by
    injection, verify each hash, save.
 2. First deploy. Owner authorizes.
 3. Read the Web App URL. Put it in `Config.gs`, `signup.js`, and the
    unsubscribe page. Owner adds the three Script Properties.
 4. Update Config.gs in the editor, redeploy as New version (gotcha 2).
-5. No-email checks against the live URL:
+5. Turn on list emails: run `setupBroadcasts` (`click-paths.md` §7), check the
+   two triggers and two tabs, redeploy New version.
+6. No-email checks against the live URL:
    ```bash
    URL='<web app url>'
    curl -sL "$URL"                                                          # {"ok":true,"service":...}
@@ -168,6 +216,8 @@ Get permission, then hand the owner `click-paths.md` §6 (Claude's browser gets
 the Turnstile checkbox and must not click it). Confirm with them, item by
 item: thank-you screen with downloads, subscriber email, owner notice, Sheet
 row, DKIM and DMARC PASS, unsubscribe plus notice, resubscribe sets `active`.
+Then, with permission, one broadcast `test` to `BROADCASTS.testTo`
+(`click-paths.md` §7). Never a real `send` as a test: it goes to everyone.
 
 If something is off: stale tab (gotcha 19), missing Script Property (the curl
 returns "verification failed" for real signups, or Resend errors appear under
@@ -181,8 +231,23 @@ Executions in Apps Script), wrong deployed version (gotcha 2).
   address, Turnstile widget, Cloudflare account. Then: how to change email
   copy (edit Config.gs, paste, redeploy New version), and where the secrets
   live (Script Properties only).
+- Give whoever writes list emails the owner handout from `click-paths.md` §7,
+  filled in, and make sure the owner has shared the Sheet with them.
 - Save a project memory with which account owns each piece; it is not
   guessable later.
 - Close Claude's Chrome tabs.
 - Optional next steps to offer, not do: tighten DMARC to `quarantine`, write
   and enable the follow-up sequence.
+
+## Adding list emails to an existing install
+
+For a site built with this skill before `Broadcasts.gs` existed:
+1. Copy `templates/apps-script/Broadcasts.gs` into the project's `apps-script/`
+   and append the `BROADCASTS` block from the template `Config.gs` to its
+   Config.gs, with `dailyLimit` set as in Phase 0 question 9. Nothing else in
+   the engine changes; older installs with a different OFFERS shape work too.
+2. `node <skill>/scripts/test-broadcasts.js <project>/apps-script`: all pass.
+3. In the live editor: add a `Broadcasts` script file, load Broadcasts.gs and
+   Config.gs by injection with hash checks (`click-paths.md` §4), save, then
+   §7: run `setupBroadcasts`, check triggers and tabs, redeploy New version.
+4. Owner shares the Sheet and gets the handout. Test with permission.

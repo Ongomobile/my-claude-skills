@@ -1,7 +1,8 @@
 # Gotchas
 
-Every one of these cost real time on the first build (Green Papaya, 2026-09-16).
-Read this before Phase 5 (Apps Script) and again before Phase 8 (live test).
+Every one of these cost real time on the first build (Green Papaya, 2026-09-16),
+or is a trap in the list-email feature added the next day. Read this before
+Phase 5 (Apps Script) and again before Phase 8 (live test).
 
 ## Apps Script
 
@@ -111,3 +112,25 @@ edit `lastGuideSentAt` in the Sheet.
 **23. The user's own Chrome tabs are invisible to Claude.** Claude's tab group
 starts empty. Open your own tab, and close it when done, especially one showing
 a secret key.
+
+## List emails (broadcasts)
+
+**24. Triggers run as whoever created them.** Run `setupBroadcasts` signed in
+as the Sheet owner. Edits by other people still fire `onBroadcastEdit`, but the
+send runs as the owner, on the owner's quotas.
+
+**25. An edit during a send waits for the hourly run.** Only one broadcast run
+works at a time (the `BROADCAST_RUNNING` script property). A `test` picked
+while a send is going out arrives within the hour, not within the minute.
+
+**26. Script edits never fire `onEdit`.** Setting a Status from code, or from
+another app writing to the Sheet, does not start a send until the hourly run.
+In testing, set Status by hand in the Sheet or call `runBroadcasts` directly.
+
+**27. The Broadcast log is the memory.** A paced send knows who already has the
+email only from the log. Deleting log rows mid-send re-sends to those people.
+Clearing the log after sends finish is safe.
+
+**28. Resend's free daily limit is per account, not per project.** Set
+`BROADCASTS.dailyLimit` from what else sends through that account, leaving
+room for every signup's guide email and owner notice.

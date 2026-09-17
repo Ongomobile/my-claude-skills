@@ -12,6 +12,7 @@ match, screenshot and adapt rather than guessing.
 4. Google Apps Script
 5. Cloudflare DNS hardening
 6. Owner's live test
+7. List emails (broadcasts)
 
 ---
 
@@ -94,7 +95,8 @@ Restore the real key before building for production.
 3. Gear icon (Project Settings) > check **Show "appsscript.json" manifest file
    in editor** > back to the editor (`<>` icon).
 4. **+** next to Files > **Script** > type `Config` > Enter. If the name box
-   still says "Untitled", select it and type again. Repeat for `Emails`.
+   still says "Untitled", select it and type again. Repeat for `Emails` and
+   `Broadcasts`.
    (Code.gs exists already.)
 5. Inject a file input and load the local files:
    ```js
@@ -105,7 +107,7 @@ Restore the real key before building for production.
    document.body.appendChild(inp)
    ```
    `find` "source files file input", `file_upload` Config.gs, Code.gs,
-   Emails.gs, appsscript.json, then:
+   Emails.gs, Broadcasts.gs, appsscript.json, then:
    ```js
    const inp = document.getElementById('src-files'); window.__src = {}
    for (const f of inp.files) window.__src[f.name] = await f.text()
@@ -132,7 +134,7 @@ Web app, Execute as Me, Who has access Anyone. Description "First deploy" >
 > <Brand> Signups (unsafe)**, then **Allow**. The warning is normal for your own
 > script. The permissions are: Sheets (write the signup row), send email (only
 > used if Resend is not set up), external services (Resend and Cloudflare), and
-> triggers (only for follow-up emails).
+> triggers (for list emails and follow-ups).
 
 **Claude, read the URL:**
 ```js
@@ -188,3 +190,54 @@ Hand over:
 >    `unsubscribed`.
 > 5. Sign up again with the same address. The row goes back to `active`. No
 >    second email inside an hour; that's the anti-flooding cooldown.
+
+## 7. List emails (broadcasts)
+
+**Claude, turn it on** (after §4, in the same editor, same account):
+1. Function dropdown in the toolbar > **setupBroadcasts** > **Run**. No new
+   authorization: it uses the Sheets and triggers permissions granted in §4.
+   If Google does ask, stop and hand the owner the authorize wording from §4.
+2. Execution log must end "Broadcasts ready". Triggers (clock icon) must show
+   exactly one `runBroadcasts` (hourly) and one `onBroadcastEdit` (on edit).
+3. Open the Sheet: a **Broadcasts** tab with an example draft row and a
+   **Broadcast log** tab.
+4. Redeploy as New version (§4), so the deployed code matches what is saved.
+
+The triggers run as the account that ran setupBroadcasts, so that must be the
+Sheet owner's account, and it is whose Resend key and Google quota get used.
+
+**Owner, share the Sheet** with whoever will write list emails, if that is not
+the Sheet owner:
+> Open the Sheet > **Share** > add <their address> as **Editor** > untick
+> **Notify people** if you'll tell them yourself > **Send**. Anyone who can edit
+> the Sheet can email the whole list, so share it with people, never "anyone
+> with the link".
+
+**Claude, first test** (real email, so ask first and name the inbox): change
+the example row to a real subject and message, set Status to `test`, and
+confirm the copy arrives at `BROADCASTS.testTo` within a minute with `[Test]`
+in the subject and the Status reading `tested`. Set it back to `draft`.
+
+**Owner handout** (give them this, filled in):
+> **Sending an email to your whole list**
+>
+> 1. Open the <Brand> Sheet and click the **Broadcasts** tab at the bottom.
+> 2. Use a new row for each email. Fill in **Subject** and **Message**. Leave a
+>    blank line between paragraphs. Don't type "Hi" or a name: "Hi Jane," is
+>    added for you, and so is the unsubscribe footer.
+> 3. Want a button? Put its words in **Button text** and the full web address
+>    (starting with https://) in **Button link**. Otherwise leave both empty.
+> 4. Set **Status** to **test**. Within a minute a copy arrives at <testTo>
+>    with [Test] in the subject. Check it on your phone.
+> 5. Happy with it? Set **Status** to **send**. Emails go out between
+>    <from> and <until>, up to <dailyLimit> a day, so a bigger list takes a few
+>    days. The **Progress** column tells you where it's up to.
+> 6. To stop a send partway, set **Status** back to **draft**. Setting it to
+>    **send** again carries on, and nobody gets it twice.
+>
+> Status turns **error** when something is missing; Progress says what. Fix
+> it and pick **test** or **send** again. Don't change the Id column, and
+> don't delete rows from the **Broadcast log** tab while a send is going.
+>
+> Tips for landing in the inbox: send every few weeks rather than in bursts,
+> keep it short and mostly words, one button at most, and invite replies.

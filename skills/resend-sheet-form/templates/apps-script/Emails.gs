@@ -168,11 +168,11 @@ function sendUnsubscribeNotice(args) {
       escapeHtml(CONFIG.brandName) + ' emails.</p>' +
       '<p>Email: ' + escapeHtml(args.email) + '<br>When: ' + escapeHtml(when) +
       '<br>How: ' + escapeHtml(args.via) + '</p>' +
-      '<p>Their row in the sheet is marked unsubscribed. Leave them out of any email you send to the list.</p>' +
+      '<p>Their row in the sheet is marked unsubscribed, and list emails skip them from now on.</p>' +
       '<p><a href="https://docs.google.com/spreadsheets/d/' + CONFIG.sheetId + '/edit">Open the sheet</a></p>',
     text: name + ' <' + args.email + '> unsubscribed from ' + CONFIG.brandName + ' emails. ' +
-          when + ', using ' + args.via + '. Their row in the sheet is marked unsubscribed. ' +
-          'Leave them out of any email you send to the list.',
+          when + ', using ' + args.via + '. Their row in the sheet is marked unsubscribed, ' +
+          'and list emails skip them from now on.',
   })
 }
 

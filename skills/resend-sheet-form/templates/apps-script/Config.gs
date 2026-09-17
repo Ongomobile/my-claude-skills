@@ -1,8 +1,8 @@
 /**
  * CONFIG: the only file you edit for a new client.
  *
- * Code.gs and Emails.gs are the engine and stay the same from one install to
- * the next. Fill in every FILL_ME below. The skill's scripts/test-backend.js
+ * Code.gs, Emails.gs and Broadcasts.gs are the engine and stay the same from
+ * one install to the next. Fill in every FILL_ME below. The skill's scripts/test-backend.js
  * refuses to pass while any FILL_ME is left, except webAppUrl, which you only
  * get after the first deploy.
  */
@@ -98,3 +98,27 @@ const OFFERS = {
  * has its own limits (free plan: 100 a day, 3,000 a month).
  */
 const QUOTA_FLOOR = 10
+
+/**
+ * BROADCASTS: one-off emails to the whole list, such as news, an event, or a
+ * sale. The owners write them in the Broadcasts tab of the Sheet, not here.
+ * Broadcasts.gs explains how it works. Run setupBroadcasts once to turn it on.
+ *
+ * dailyLimit: Resend's free plan allows 100 emails a day for the whole
+ * account. 60 for list emails leaves the rest for guide emails and owner
+ * notices, and a bigger list just takes more days. Lower it if other projects
+ * share the Resend account; raise it on a paid plan.
+ */
+const BROADCASTS = {
+  sheetName: 'Broadcasts',
+  logSheetName: 'Broadcast log',
+  dailyLimit: 60,
+
+  // Hours in the script's time zone (timeZone in appsscript.json). 9 and 17
+  // mean list emails only go out from 9am to 5pm. Tests ignore this.
+  sendFromHour: 9,
+  sendUntilHour: 17,
+
+  // Where a test copy goes.
+  testTo: CONFIG.ownerNotifyTo,
+}

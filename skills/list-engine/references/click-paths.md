@@ -218,26 +218,6 @@ the example row to a real subject and message, set Status to `test`, and
 confirm the copy arrives at `BROADCASTS.testTo` within a minute with `[Test]`
 in the subject and the Status reading `tested`. Set it back to `draft`.
 
-**Owner handout** (give them this, filled in):
-> **Sending an email to your whole list**
->
-> 1. Open the <Brand> Sheet and click the **Broadcasts** tab at the bottom.
-> 2. Use a new row for each email. Fill in **Subject** and **Message**. Leave a
->    blank line between paragraphs. Don't type "Hi" or a name: "Hi Jane," is
->    added for you, and so is the unsubscribe footer.
-> 3. Want a button? Put its words in **Button text** and the full web address
->    (starting with https://) in **Button link**. Otherwise leave both empty.
-> 4. Set **Status** to **test**. Within a minute a copy arrives at <testTo>
->    with [Test] in the subject. Check it on your phone.
-> 5. Happy with it? Set **Status** to **send**. Emails go out between
->    <from> and <until>, up to <dailyLimit> a day, so a bigger list takes a few
->    days. The **Progress** column tells you where it's up to.
-> 6. To stop a send partway, set **Status** back to **draft**. Setting it to
->    **send** again carries on, and nobody gets it twice.
->
-> Status turns **error** when something is missing; Progress says what. Fix
-> it and pick **test** or **send** again. Don't change the Id column, and
-> don't delete rows from the **Broadcast log** tab while a send is going.
->
-> Tips for landing in the inbox: send every few weeks rather than in bursts,
-> keep it short and mostly words, one button at most, and invite replies.
+**Owner guide:** give whoever writes list emails `templates/owner-guide.html`,
+filled in (SKILL.md, Handoff). It covers the Sheet tabs, writing, testing and
+sending a list email, stopping a send, and what to do when something looks off.

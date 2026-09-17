@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>List email preview</title>
+<style>
+  body { margin: 0; background: #eef1f4; font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; color: #1f2933; }
+  .wrap { max-width: 44rem; margin: 0 auto; padding: 24px 16px 64px; }
+  .note { font-size: 13px; color: #52606d; margin: 0 0 12px; }
+  .head, .body, details { background: #fff; border: 1px solid #d9dee4; border-radius: 10px; }
+  .head { padding: 14px 18px; margin-bottom: 10px; }
+  .head div { overflow-wrap: anywhere; }
+  .head span { display: inline-block; min-width: 5.5em; color: #52606d; }
+  .subject { font-size: 18px; font-weight: 700; margin-top: 6px; }
+  .body { padding: 20px 14px; overflow-wrap: anywhere; }
+  details { margin-top: 10px; padding: 12px 18px; }
+  summary { cursor: pointer; font-weight: 600; }
+  pre { white-space: pre-wrap; overflow-wrap: anywhere; font: 13px/1.55 ui-monospace, Menlo, monospace; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="note">Preview of a list email written in the Broadcasts tab. The words are an example; the greeting, button and footer are what every list email gets.</p>
+  <div class="head">
+    <div><span>From</span>Sample Bakery &lt;hello@mail.example.com&gt;</div>
+    <div><span>To</span>jane@example.com</div>
+    <div><span>Reply-to</span>hello@example.com</div>
+    <div class="subject">Rye is back this Saturday</div>
+  </div>
+  <div class="body"><div style="font:16px/1.6 -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif;color:#1f2933;max-width:34rem;margin:0 auto;padding:8px 4px"><p>Hi Jane,</p><p>Our dark rye is back in the case this Saturday, and it goes fast.</p><p>Come before 10 if you want a loaf. We are also trying a new seeded sourdough, and we would love to know what you think.</p><p style="margin:24px 0"><a href="https://example.com/menu" style="background:#0a7a45;color:#ffffff;text-decoration:none;font-weight:700;padding:14px 26px;border-radius:999px;display:inline-block">See this week&#39;s bakes</a></p><hr style="border:none;border-top:1px solid #e3e7ec;margin:32px 0 16px"><p style="font-size:13px;line-height:1.55;color:#52606d;margin:0">Sample Bakery<br>123 Main Street, Springfield, OR 97477<br><br>You are getting this because you signed up at our website.<br><a href="https://example.com/unsubscribe/?u=0123456789abcdef0123456789abcdef" style="color:#52606d">Unsubscribe</a></p></div></div>
+  <details><summary>Plain-text version</summary><pre>Hi Jane,
+
+Our dark rye is back in the case this Saturday, and it goes fast.
+
+Come before 10 if you want a loaf. We are also trying a new seeded sourdough, and we would love to know what you think.
+
+See this week&#39;s bakes
+
+See this week&#39;s bakes: https://example.com/menu
+
+123 Main Street, Springfield, OR 97477
+Unsubscribe: https://example.com/unsubscribe/?u=0123456789abcdef0123456789abcdef</pre></details>
+</div>
+</body>
+</html>

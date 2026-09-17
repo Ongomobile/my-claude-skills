@@ -1,10 +1,10 @@
 ---
-name: resend-sheet-form
-description: Guided, step-by-step build of a website signup form that saves each person to a Google Sheet, emails them instantly through Resend from the client's own domain (optionally with download links to files hosted on Cloudflare R2), notifies the owners of every signup and unsubscribe, handles unsubscribe properly (footer link page plus Gmail/Yahoo one-click), and lets the owners send list emails (broadcasts) to every active subscriber by writing them in the Sheet, paced to Resend's free daily limit, with Cloudflare Turnstile bot protection and DKIM/SPF/DMARC set up. Use whenever the user wants a lead magnet, free guide or PDF download for an email, coupon delivery, newsletter or mailing list signup, waitlist that emails people, a newsletter or "email my whole list" feature, "form to Resend", "form to Google Sheet with emails", "send a download link when someone signs up", or wants to repeat the Green Papaya signup setup for another site or client. Also use to add list emails (broadcasts) to a signup system already built with this skill. Prefer this over sheet-form whenever the emails must come from the client's domain, include downloads, or need unsubscribe; use sheet-form for a simple contact form that only emails the owner.
+name: list-engine
+description: Guided, step-by-step build of a website signup form that saves each person to a Google Sheet, emails them instantly through Resend from the client's own domain (optionally with download links to files hosted on Cloudflare R2), notifies the owners of every signup and unsubscribe, handles unsubscribe properly (footer link page plus Gmail/Yahoo one-click), and lets the owners send list emails (broadcasts) to every active subscriber by writing them in the Sheet, paced to Resend's free daily limit, with Cloudflare Turnstile bot protection and DKIM/SPF/DMARC set up. Use whenever the user wants a lead magnet, free guide or PDF download for an email, coupon delivery, newsletter or mailing list signup, waitlist that emails people, a newsletter or "email my whole list" feature, "form to Resend", "form to Google Sheet with emails", "send a download link when someone signs up", or wants to repeat this signup setup for another site or client. Also use to add list emails (broadcasts) to a signup system built with this skill or its earlier name, resend-sheet-form. Prefer this over sheet-form whenever the emails must come from the client's domain, include downloads, or need unsubscribe; use sheet-form for a simple contact form that only emails the owner.
 user-invocable: true
 ---
 
-# resend-sheet-form
+# list-engine
 
 Walks the user through wiring a signup form end to end, one phase at a time,
 doing the build and dashboard work and handing them only what is theirs.
@@ -70,8 +70,12 @@ It takes longer and has more hand-offs, so say that up front.
 | `templates/site/turnstile.js` | `createTurnstile()`: load, token wait, reset |
 | `templates/site/signup-form.html` | Reference form wiring (plain HTML); port to the site's stack |
 | `templates/site/unsubscribe/index.html` | The footer link's landing page |
+| `templates/site/demo.html` | Demo mode: the signup form on pretend replies, plus links to the email previews. Opens from disk |
+| `templates/site/demo-emails/` | Welcome and list email previews for the demo, built with `--sample` |
+| `templates/owner-guide.html` | Plain-language guide to the Sheet and list emails for whoever runs the list |
 | `scripts/test-backend.js` | Runs the backend in Node against fake Google services, 34 checks |
 | `scripts/test-broadcasts.js` | Runs Broadcasts.gs the same way: setup, test, pacing, resume, unsubscribes, outages, 47 checks |
+| `scripts/preview-emails.js` | Renders the welcome and list emails from the real templates into HTML pages. Nothing is sent |
 | `references/click-paths.md` | Exact dashboard clicks and the wording to hand the owner |
 | `references/gotchas.md` | 28 things that broke or bite. Read before Phase 5 |
 
@@ -114,7 +118,7 @@ Ask one at a time; skip anything already known from the project or earlier chat.
    sets `BROADCASTS.dailyLimit`: 60 on a free account of its own, lower if
    shared, higher on a paid plan.
 10. **Email copy.** Draft the subject, intro, per-file text and sign-off in the
-   brand's voice, show it, and get approval now. Changing it later costs a
+   brand's voice, show it rendered (Phase 1 step 4), and get approval now. Changing it later costs a
    redeploy.
 
 Checkpoint: summarize the answers as a short table and confirm.
@@ -130,8 +134,13 @@ Checkpoint: summarize the answers as a short table and confirm.
    on any leftover `FILL_ME` and notes the unset `webAppUrl` (fine for now).
    All other checks must pass. Then
    `node <skill>/scripts/test-broadcasts.js <project>/apps-script`: all pass.
+4. Render the emails for the owner:
+   `node <skill>/scripts/preview-emails.js <project>/apps-script <scratch folder>`,
+   open the pages, and get the copy approved before anything is deployed.
+   Buyers who want to see the whole thing first can open
+   `templates/site/demo.html` from disk.
 
-Checkpoint: config values, the approved copy, test output.
+Checkpoint: config values, the approved copy (rendered previews), test output.
 
 ## Phase 2: Downloads on R2 (skip if no files)
 
@@ -231,8 +240,9 @@ Executions in Apps Script), wrong deployed version (gotcha 2).
   address, Turnstile widget, Cloudflare account. Then: how to change email
   copy (edit Config.gs, paste, redeploy New version), and where the secrets
   live (Script Properties only).
-- Give whoever writes list emails the owner handout from `click-paths.md` §7,
-  filled in, and make sure the owner has shared the Sheet with them.
+- Copy `templates/owner-guide.html` into the project (next to `apps-script/`),
+  fill in every `{{...}}` from Config.gs, and give it to whoever runs the list.
+  Make sure the Sheet owner has shared the Sheet with them as Editor.
 - Save a project memory with which account owns each piece; it is not
   guessable later.
 - Close Claude's Chrome tabs.
@@ -250,4 +260,4 @@ For a site built with this skill before `Broadcasts.gs` existed:
 3. In the live editor: add a `Broadcasts` script file, load Broadcasts.gs and
    Config.gs by injection with hash checks (`click-paths.md` §4), save, then
    §7: run `setupBroadcasts`, check triggers and tabs, redeploy New version.
-4. Owner shares the Sheet and gets the handout. Test with permission.
+4. Owner shares the Sheet and gets the filled-in owner guide. Test with permission.

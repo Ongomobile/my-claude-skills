@@ -22,10 +22,10 @@ Run any skill by typing `/` and its name, or just ask for the thing it does and 
 | `scrollcraft` | Builds a premium scroll-driven landing page: video that scrubs as you scroll, pinned sections, sideways rails. Interviews you first, then generates or uses your assets. | "Make my brand a scroll experience" |
 | `mobile-microsite` | Builds a mobile-first scroll-film site that plays like one continuous shot, for a known brand or as a spec site to pitch a prospect. | "Build a spec site for a local roofer" |
 | `sheet-form` | Wires a simple form (contact, enquiry, waitlist) to a Google Sheet with emails sent from Gmail. | "Make a contact form that goes to a spreadsheet" |
-| `resend-sheet-form` | Step-by-step build of a signup form: Google Sheet, instant email from the client's domain through Resend, optional downloads on Cloudflare R2, owner notices, unsubscribe, Turnstile, DMARC. | "Set up a form that emails a free PDF guide" |
+| `list-engine` | Step-by-step build of a signup form: Google Sheet, instant email from the client's domain through Resend, optional downloads on Cloudflare R2, owner notices, unsubscribe, list emails written in the Sheet, Turnstile, DMARC. Sold as the List Engine product. | "Set up a form that emails a free PDF guide" |
 | `calendar-booking` | Step-by-step build of a branded booking modal that replaces Calendly or Setmore: instant booking on the owner's Google Calendar with a Meet link and invite, heads-up email, Sheet row, hours and days off edited in the Sheet, Turnstile. Includes an owner guide. | "Replace Calendly with a booking calendar on my site" |
 
-Which form skill? Use `sheet-form` when only the owner needs an email. Use `resend-sheet-form` when subscribers get email from the business's own domain, downloads, or an unsubscribe link.
+Which form skill? Use `sheet-form` when only the owner needs an email. Use `list-engine` when subscribers get email from the business's own domain, downloads, or an unsubscribe link.
 
 ### Content and products
 

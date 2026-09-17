@@ -1,6 +1,6 @@
 # Gotchas
 
-Every one of these cost real time on the first build (Green Papaya, 2026-09-16),
+Every one of these cost real time on the first live build (2026-09-16),
 or is a trap in the list-email feature added the next day. Read this before
 Phase 5 (Apps Script) and again before Phase 8 (live test).
 

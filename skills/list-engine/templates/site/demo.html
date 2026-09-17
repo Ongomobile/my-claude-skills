@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>List Engine Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<!--
+  Demo mode. Open this file straight from your computer. It runs the signup
+  form's real behaviour on pretend replies: validation, the honeypot, the
+  sending state, the thank-you screen with downloads, and the error message.
+  Nothing is saved and nothing is sent.
+
+  The email previews in demo-emails/ come from the real templates:
+    node scripts/preview-emails.js templates/apps-script templates/site/demo-emails --sample
+-->
+<style>
+  :root {
+    --canvas: #f5efe2;
+    --paper: #faf6ec;
+    --canvas-warm: #efe6d2;
+    --ink: #1a1714;
+    --graphite: #3c3631;
+    --pencil: #6b6259;
+    --tape: #d8cfbe;
+    --orange: #e8703a;
+    --orange-deep: #b8511f;
+    --stamp: #c13f2e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--canvas);
+    color: var(--ink);
+    font: 17px/1.6 Inter, system-ui, sans-serif;
+  }
+  main { max-width: 600px; margin: 0 auto; padding: 48px 16px 80px; }
+  .tag {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--orange-deep);
+  }
+  h1 {
+    margin: 12px 0 14px;
+    font-size: clamp(32px, 7vw, 46px);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+  }
+  h2 { margin: 48px 0 8px; font-size: 24px; font-weight: 800; letter-spacing: -0.02em; }
+  p { margin: 0 0 16px; color: var(--graphite); }
+
+  .card {
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    border-radius: 12px;
+    box-shadow: 3px 3px 0 var(--ink);
+    padding: 24px;
+  }
+  .card h3 { margin: 0 0 4px; font-size: 22px; font-weight: 800; }
+  label { display: block; margin: 14px 0 4px; font-size: 14px; font-weight: 600; }
+  input {
+    width: 100%;
+    padding: 12px 14px;
+    font: 16px Inter, system-ui, sans-serif; /* 16px or iOS zooms on focus */
+    color: var(--ink);
+    background: #fff;
+    border: 1.5px solid var(--ink);
+    border-radius: 6px;
+  }
+  input:focus-visible, .cta:focus-visible, a:focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; }
+  .cta {
+    display: inline-block;
+    margin-top: 18px;
+    padding: 14px 26px;
+    font: 700 15px Inter, system-ui, sans-serif;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--ink);
+    background: var(--orange);
+    border: 0;
+    border-radius: 4px;
+    box-shadow: 3px 3px 0 var(--ink);
+    cursor: pointer;
+  }
+  .cta:disabled { opacity: 0.6; cursor: wait; }
+  .message { margin: 12px 0 0; font-size: 14px; color: var(--pencil); }
+  .message.is-error { color: var(--stamp); font-weight: 600; }
+  .downloads { display: flex; flex-wrap: wrap; gap: 10px; }
+  .downloads .cta { margin-top: 8px; }
+
+  .links { list-style: none; padding: 0; margin: 12px 0 0; }
+  .links li { margin: 8px 0; }
+  .links a { color: var(--ink); font-weight: 600; }
+  .links span { display: block; font-size: 14px; color: var(--pencil); }
+
+  .sheet-wrap { overflow-x: auto; margin-top: 12px; }
+  table { border-collapse: collapse; width: 100%; min-width: 520px; background: #fff; font-size: 14px; }
+  th, td { text-align: left; padding: 8px 10px; border: 1px solid var(--tape); vertical-align: top; }
+  th { background: var(--canvas-warm); font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; }
+  td.status { font-family: "JetBrains Mono", monospace; font-weight: 600; }
+
+  .states {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1.5px solid var(--tape);
+    font: 14px/1.7 "JetBrains Mono", ui-monospace, monospace;
+    color: var(--pencil);
+  }
+  .states a { color: var(--ink); }
+</style>
+</head>
+<body>
+<main>
+  <div class="tag">Demo mode</div>
+  <h1>Your signup form, running on pretend replies.</h1>
+  <p>Sign up below. Nothing is saved and no email goes out. Once your Google Sheet is connected, this same form adds people to your list and sends the welcome email straight away.</p>
+
+  <div class="card">
+    <form id="signup" novalidate>
+      <h3>Get the free sourdough guide</h3>
+      <p>Every step we use for our own starter, plus a coupon for your first loaf.</p>
+
+      <label for="signup-name">Name</label>
+      <input id="signup-name" name="name" type="text" autocomplete="name" required>
+
+      <label for="signup-email">Email address</label>
+      <input id="signup-email" name="email" type="email" autocomplete="email" inputmode="email" required>
+
+      <button type="submit" class="cta">Get the guide</button>
+
+      <!-- Honeypot: hidden from people. A bot that fills it sees success and nothing is sent. -->
+      <div aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden">
+        <label for="signup-company">Company</label>
+        <input id="signup-company" name="company" type="text" tabindex="-1" autocomplete="off">
+      </div>
+
+      <p id="signup-message" class="message" aria-live="polite">No spam. Unsubscribe anytime.</p>
+    </form>
+
+    <div id="signup-done" role="status" aria-live="polite" hidden>
+      <h3>Check your inbox</h3>
+      <p>Your guide is on the way. If it isn't there in a few minutes, look in your spam folder. Or grab it right now:</p>
+      <div class="downloads">
+        <a class="cta" href="demo-emails/welcome-main.html">Download the guide</a>
+        <a class="cta" href="demo-emails/welcome-main.html">Download your coupon</a>
+      </div>
+      <p class="message">In demo mode these open the welcome email preview instead of a file.</p>
+    </div>
+  </div>
+
+  <h2>The emails</h2>
+  <p>Built from the real templates, with a made-up bakery's words.</p>
+  <ul class="links">
+    <li><a href="demo-emails/welcome-main.html">Welcome email</a><span>Sent the moment someone signs up, with their downloads.</span></li>
+    <li><a href="demo-emails/list-email.html">List email</a><span>Written in your Google Sheet and sent to everyone still subscribed.</span></li>
+  </ul>
+
+  <h2>Where list emails are written</h2>
+  <p>A tab in your Google Sheet. Pick <b>test</b> for a copy in your own inbox, then <b>send</b>. The Progress column keeps you posted.</p>
+  <div class="sheet-wrap">
+    <table>
+      <thead><tr><th>Status</th><th>Subject</th><th>Message</th><th>Progress</th></tr></thead>
+      <tbody>
+        <tr><td class="status">sent</td><td>Rye is back this Saturday</td><td>Our dark rye is back in the case this Saturday...</td><td>Sent to 212 people. Finished Sep 12, 10:04 AM.</td></tr>
+        <tr><td class="status">tested</td><td>Holiday pre-orders are open</td><td>Pies and loaves for the week of...</td><td>Test sent to owner@example.com. Change Status to send when it looks right.</td></tr>
+        <tr><td class="status">draft</td><td>New seeded sourdough</td><td>We have been testing a new...</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="states">
+    // try the other states<br>
+    <a href="?signupStub=slow">slow</a> the reply takes 6 seconds<br>
+    <a href="?signupStub=error">error</a> the signup can't go through<br>
+    <a href="demo.html">normal</a> back to the usual demo
+  </div>
+</main>
+
+<script>
+  (function () {
+    var stub = new URLSearchParams(location.search).get('signupStub') || 'ok'
+    var form = document.getElementById('signup')
+    var message = document.getElementById('signup-message')
+    var button = form.querySelector('button[type=submit]')
+
+    function isValidEmail(value) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(value).trim())
+    }
+
+    function showError(text) {
+      message.textContent = text
+      message.classList.add('is-error')
+    }
+
+    function done() {
+      form.hidden = true
+      document.getElementById('signup-done').hidden = false
+    }
+
+    // Stands in for submitSignup() in signup.js, which posts to your Apps Script.
+    function pretendSignup() {
+      return new Promise(function (resolve, reject) {
+        setTimeout(function () {
+          stub === 'error' ? reject(new Error('pretend failure')) : resolve()
+        }, stub === 'slow' ? 6000 : 900)
+      })
+    }
+
+    form.addEventListener('submit', function (event) {
+      event.preventDefault()
+      if (button.disabled) return
+
+      var name = form.elements.name.value.trim()
+      var email = form.elements.email.value.trim()
+      if (!name) return showError('Please enter your name.')
+      if (!isValidEmail(email)) return showError('That does not look like an email address. Please check it.')
+
+      // A filled honeypot is a bot: show success, send nothing.
+      if (form.elements.company.value) return done()
+
+      message.classList.remove('is-error')
+      message.textContent = 'No spam. Unsubscribe anytime.'
+      button.disabled = true
+      button.textContent = 'Sending...'
+
+      pretendSignup().then(done, function () {
+        // Never fake success. Say it failed and let them try again.
+        showError('Something went wrong on our end. Please try again.')
+        button.disabled = false
+        button.textContent = 'Get the guide'
+      })
+    })
+  })()
+</script>
+</body>
+</html>

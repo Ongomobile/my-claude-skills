@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Email List Guide</title>
+<!--
+  Fill in every {{...}} before handing this over:
+    {{BRAND}}        the business name
+    {{SHEET_NAME}}   the Google Sheet's file name
+    {{TEST_INBOX}}   BROADCASTS.testTo
+    {{DAILY_LIMIT}}  BROADCASTS.dailyLimit
+    {{SEND_HOURS}}   sendFromHour to sendUntilHour in words, e.g. "9am to 5pm Eastern"
+  Remove the Downloads sentence in the first section if the signup has no files.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #FAF6EC;
+    --canvas: #F5EFE2;
+    --canvas-warm: #EFE6D2;
+    --ink: #1A1714;
+    --graphite: #3C3631;
+    --pencil: #6B6259;
+    --tape: #D8CFBE;
+    --orange: #E8703A;
+    --orange-text: #A8481A;
+    --tape-yellow: #F5C24B;
+    --stamp: #C13F2E;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--canvas);
+    color: var(--ink);
+    font: 17px/1.6 Inter, ui-sans-serif, system-ui, sans-serif;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 56px 16px 96px; }
+  .tape {
+    display: inline-block;
+    transform: rotate(-2deg);
+    background: var(--tape-yellow);
+    padding: 5px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    box-shadow: 3px 3px 0 rgba(26, 23, 20, 0.15);
+  }
+  h1 {
+    margin: 20px 0 12px;
+    font-size: clamp(36px, 7vw, 56px);
+    font-weight: 900;
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+  }
+  h1 span { color: var(--orange-text); }
+  .lede { max-width: 620px; font-size: 19px; color: var(--graphite); margin: 0; }
+  h2 {
+    margin: 64px 0 8px;
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+  }
+  h3 { margin: 28px 0 6px; font-size: 19px; font-weight: 700; }
+  p { margin: 10px 0; }
+  .muted { color: var(--graphite); }
+  code, .mono { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 0.88em; }
+  code { background: var(--canvas-warm); padding: 1px 6px; border-radius: 4px; }
+  .hint { font-family: "JetBrains Mono", monospace; font-size: 14px; color: var(--pencil); }
+
+  .card {
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    border-radius: 14px;
+    box-shadow: 3px 3px 0 var(--ink);
+    padding: 24px 28px;
+    margin: 20px 0;
+  }
+  .flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 24px 0; }
+  .flow div {
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    border-radius: 8px;
+    padding: 14px;
+    font-size: 15px;
+  }
+  .flow strong { display: block; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--orange-text); margin-bottom: 4px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 15px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--tape); vertical-align: top; }
+  th { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--pencil); }
+  td:first-child { font-weight: 600; white-space: nowrap; }
+  .sheet { background: var(--paper); border: 1.5px solid var(--ink); border-radius: 8px; overflow: hidden; }
+  .sheet th { background: var(--canvas-warm); color: var(--ink); }
+  .sheet td { font-family: "JetBrains Mono", monospace; font-size: 14px; font-weight: 400; }
+
+  .steps { counter-reset: step; list-style: none; padding: 0; margin: 12px 0; }
+  .steps li { counter-increment: step; position: relative; padding: 6px 0 6px 44px; }
+  .steps li::before {
+    content: counter(step);
+    position: absolute; left: 0; top: 6px;
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--orange); color: var(--ink);
+    border-radius: 999px; font-weight: 800; font-size: 14px;
+  }
+  .warn {
+    border-left: 4px solid var(--stamp);
+    background: var(--paper);
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    margin: 18px 0;
+  }
+  .warn strong { color: var(--stamp); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid2 .card { margin: 0; }
+  .grid2 h3 { margin-top: 0; }
+
+  @media (max-width: 700px) {
+    .flow, .grid2 { grid-template-columns: 1fr; }
+    td:first-child { white-space: normal; }
+    .card { padding: 20px; }
+  }
+  @media print {
+    body { background: #fff; }
+    .card, .flow div { box-shadow: none; }
+    h2 { page-break-after: avoid; }
+  }
+</style>
+</head>
+<body>
+<main class="wrap">
+
+  <span class="tape">Owner guide</span>
+  <h1>Your email list.<br><span>How to run it.</span></h1>
+  <p class="lede">Everything lives in one Google Sheet, <b>{{SHEET_NAME}}</b>. You never touch the code. Here's what each part does, and how to send an email to everyone on your list.</p>
+
+  <!-- ─────────────────────────────── -->
+  <h2>What happens when someone signs up</h2>
+  <div class="flow">
+    <div><strong>1. They sign up</strong>Name and email, on your website.</div>
+    <div><strong>2. They get the email</strong>Straight away, from {{BRAND}}. Downloads are in it and on the thank-you screen.</div>
+    <div><strong>3. You hear about it</strong>A "New signup" email lands in your inbox.</div>
+    <div><strong>4. It's logged</strong>A new row appears on the <b>Signups</b> tab.</div>
+  </div>
+  <p class="muted">Reply to the "New signup" email and your reply goes straight to them.</p>
+
+  <!-- ─────────────────────────────── -->
+  <h2>The emails you get</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3>New signup</h3>
+      <p>Who signed up and when. Their welcome email already went out, so there's nothing to do unless you want to say hello.</p>
+    </div>
+    <div class="card">
+      <h3>Unsubscribed</h3>
+      <p>Someone clicked unsubscribe. Their row is marked <code>unsubscribed</code> and list emails skip them from now on. Nothing to do.</p>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────── -->
+  <h2>The three tabs</h2>
+
+  <h3>Signups</h3>
+  <p>One row per person. The columns that matter to you:</p>
+  <table class="card" style="padding:0">
+    <thead><tr><th>Column</th><th>What it means</th></tr></thead>
+    <tbody>
+      <tr><td>timestamp</td><td>When they signed up.</td></tr>
+      <tr><td>firstName, email</td><td>What they typed on your site.</td></tr>
+      <tr><td>status</td><td><code>active</code> gets your list emails. <code>unsubscribed</code> gets nothing.</td></tr>
+      <tr><td>notes</td><td>When they unsubscribed, or came back.</td></tr>
+    </tbody>
+  </table>
+  <p class="hint">// leave the token column alone. It's what makes each person's unsubscribe link work.</p>
+
+  <h3>Broadcasts</h3>
+  <p>Where you write emails to your whole list. One row per email. How it works is in the next section.</p>
+
+  <h3>Broadcast log</h3>
+  <p>Written for you. One row for every list email sent: when, which email, and who got it. Handy when someone asks "did I get that?"</p>
+
+  <!-- ─────────────────────────────── -->
+  <h2>Send an email to your whole list</h2>
+  <div class="card">
+    <ol class="steps">
+      <li>Open the <b>Broadcasts</b> tab and use a new row.</li>
+      <li>Fill in <b>Subject</b> and <b>Message</b>. Leave a blank line between paragraphs. Don't start with "Hi" or a name: "Hi Jane," is added for you, and so is the unsubscribe link at the bottom.</li>
+      <li>Want a button? Put its words in <b>Button text</b> and the full web address, starting with https://, in <b>Button link</b>. No button? Leave both empty.</li>
+      <li>Set <b>Status</b> to <b>test</b>. In about a minute a copy arrives at {{TEST_INBOX}}, with [Test] in the subject. Read it on your phone.</li>
+      <li>Happy with it? Set <b>Status</b> to <b>send</b>.</li>
+    </ol>
+  </div>
+  <p>Emails go out between <b>{{SEND_HOURS}}</b>, up to <b>{{DAILY_LIMIT}} a day</b>. A bigger list finishes over the next few days by itself. That limit keeps room for the welcome emails new signups need.</p>
+
+  <h3>What Status tells you</h3>
+  <table class="sheet">
+    <thead><tr><th>Status</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td>draft</td><td>Nothing happens. Work on it as long as you like.</td></tr>
+      <tr><td>test</td><td>Sending you a test copy now.</td></tr>
+      <tr><td>tested</td><td>Your test went out. Edit and test again, or pick send.</td></tr>
+      <tr><td>send</td><td>Starting to send to your list.</td></tr>
+      <tr><td>sending</td><td>On its way. Progress says how many have gone and what's next.</td></tr>
+      <tr><td>sent</td><td>Everyone on your list has it.</td></tr>
+      <tr><td>error</td><td>Something's missing. Progress says what. Fix it and pick test or send again.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="grid2">
+    <div class="card">
+      <h3>Stop a send partway</h3>
+      <ol class="steps">
+        <li>Set Status back to <b>draft</b>.</li>
+        <li>Pick <b>send</b> again later and it carries on. Nobody gets it twice.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3>Take someone off your list</h3>
+      <ol class="steps">
+        <li>Find every row with their email on <b>Signups</b>.</li>
+        <li>Change status to <code>unsubscribed</code> on each one.</li>
+      </ol>
+    </div>
+  </div>
+  <p class="muted">Someone asks to join? Send them to the signup form on your website. That records that they asked, and gives them their own unsubscribe link. Don't type people into the Sheet yourself.</p>
+
+  <!-- ─────────────────────────────── -->
+  <h2>Getting into the inbox, not spam</h2>
+  <p>Send every 2 to 4 weeks. A steady rhythm does better than a burst after a long quiet spell.</p>
+  <p>Keep it short and mostly words, with one button at most. Ask a question people can answer by hitting reply, like "What should we make next?" Replies tell Gmail people want your emails.</p>
+
+  <!-- ─────────────────────────────── -->
+  <h2>If something looks off</h2>
+  <table class="card" style="padding:0">
+    <thead><tr><th>You see</th><th>Try this</th></tr></thead>
+    <tbody>
+      <tr><td>The test didn't arrive</td><td>Check spam. Then look at Status: <b>error</b> means Progress says why. Still <b>test</b> after a few minutes? Pick draft, then test again.</td></tr>
+      <tr><td>Status stays on sending</td><td>Normal for a big list or outside sending hours. Progress says when the rest go out.</td></tr>
+      <tr><td>Progress says Paused</td><td>The email service hit a limit or had a hiccup. It tries again within the hour by itself.</td></tr>
+      <tr><td>One address failed</td><td>The Broadcast log shows which. It's usually a typo in their email. Everyone else still got yours.</td></tr>
+      <tr><td>No "New signup" emails</td><td>Check spam. If new rows still appear on Signups, the signup itself is working.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="warn" style="border-left-color: var(--orange)">
+    <p><strong style="color: var(--orange-text)">Leave these alone:</strong> the tab names, the header rows, the token column on Signups, the Id column on Broadcasts, and rows on the Broadcast log while a send is going. Share the Sheet with people you trust, never "anyone with the link". Anyone who can edit it can email your whole list.</p>
+  </div>
+
+</main>
+</body>
+</html>

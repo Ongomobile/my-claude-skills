@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Booking Calendar Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #FAF6EC;
+    --canvas: #F5EFE2;
+    --canvas-warm: #EFE6D2;
+    --ink: #1A1714;
+    --graphite: #3C3631;
+    --pencil: #6B6259;
+    --tape: #D8CFBE;
+    --orange: #E8703A;
+    --orange-text: #A8481A;
+    --tape-yellow: #F5C24B;
+    --stamp: #C13F2E;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--canvas);
+    color: var(--ink);
+    font: 17px/1.6 Inter, ui-sans-serif, system-ui, sans-serif;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 56px 16px 96px; }
+  .tape {
+    display: inline-block;
+    transform: rotate(-2deg);
+    background: var(--tape-yellow);
+    padding: 5px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    box-shadow: 3px 3px 0 rgba(26, 23, 20, 0.15);
+  }
+  h1 {
+    margin: 20px 0 12px;
+    font-size: clamp(36px, 7vw, 56px);
+    font-weight: 900;
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+  }
+  h1 span { color: var(--orange-text); }
+  .lede { max-width: 620px; font-size: 19px; color: var(--graphite); margin: 0; }
+  h2 {
+    margin: 64px 0 8px;
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+  }
+  h3 { margin: 28px 0 6px; font-size: 19px; font-weight: 700; }
+  p { margin: 10px 0; }
+  .muted { color: var(--graphite); }
+  code, .mono { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 0.88em; }
+  code { background: var(--canvas-warm); padding: 1px 6px; border-radius: 4px; }
+  .hint { font-family: "JetBrains Mono", monospace; font-size: 14px; color: var(--pencil); }
+
+  .card {
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    border-radius: 14px;
+    box-shadow: 3px 3px 0 var(--ink);
+    padding: 24px 28px;
+    margin: 20px 0;
+  }
+  .flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 24px 0; }
+  .flow div {
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    border-radius: 8px;
+    padding: 14px;
+    font-size: 15px;
+  }
+  .flow strong { display: block; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--orange-text); margin-bottom: 4px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 15px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--tape); vertical-align: top; }
+  th { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--pencil); }
+  td:first-child { font-weight: 600; white-space: nowrap; }
+  .sheet { background: var(--paper); border: 1.5px solid var(--ink); border-radius: 8px; overflow: hidden; }
+  .sheet th { background: var(--canvas-warm); color: var(--ink); }
+  .sheet td { font-family: "JetBrains Mono", monospace; font-size: 14px; font-weight: 400; }
+
+  .steps { counter-reset: step; list-style: none; padding: 0; margin: 12px 0; }
+  .steps li { counter-increment: step; position: relative; padding: 6px 0 6px 44px; }
+  .steps li::before {
+    content: counter(step);
+    position: absolute; left: 0; top: 6px;
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--orange); color: var(--ink);
+    border-radius: 999px; font-weight: 800; font-size: 14px;
+  }
+  .warn {
+    border-left: 4px solid var(--stamp);
+    background: var(--paper);
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    margin: 18px 0;
+  }
+  .warn strong { color: var(--stamp); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid2 .card { margin: 0; }
+  .grid2 h3 { margin-top: 0; }
+
+  @media (max-width: 700px) {
+    .flow, .grid2 { grid-template-columns: 1fr; }
+    td:first-child { white-space: normal; }
+  }
+  @media print {
+    body { background: #fff; }
+    .card, .flow div { box-shadow: none; }
+    h2 { page-break-after: avoid; }
+  }
+</style>
+</head>
+<body>
+<main class="wrap">
+
+  <span class="tape">Owner guide</span>
+  <h1>Your booking calendar.<br><span>How to run it.</span></h1>
+  <p class="lede">Everything lives in two places: your Google Sheet and your Google Calendar. You never touch the code. Here's what each part does and how to handle the everyday stuff.</p>
+
+  <!-- ─────────────────────────────── -->
+  <h2>What happens when someone books</h2>
+  <div class="flow">
+    <div><strong>1. They pick</strong>A day and time on your site, shown in their own time zone.</div>
+    <div><strong>2. It books</strong>An event lands on your Google Calendar with a Meet link.</div>
+    <div><strong>3. Everyone hears</strong>Google emails them the invite. You get a heads-up email.</div>
+    <div><strong>4. It's logged</strong>A new row appears on the <b>Bookings</b> tab.</div>
+  </div>
+  <p class="muted">Nobody can grab a time you're busy. The site checks your calendar again the moment they click book.</p>
+
+  <!-- ─────────────────────────────── -->
+  <h2>Where to see your bookings</h2>
+  <div class="grid2">
+    <div class="card">
+      <h3>Google Calendar</h3>
+      <p>Sign in as the account that runs the booking script. Each call shows as <b>"Your name + Their name: Free 30-minute call"</b>, with the Meet link and their answers in the description.</p>
+    </div>
+    <div class="card">
+      <h3>The Bookings tab</h3>
+      <p>One row per call: when they booked, name, email, call time, their time zone, what they're working on, website, Meet link and event link. Sort it, filter it, it's your lead list.</p>
+    </div>
+  </div>
+  <p class="hint">// reply to the heads-up email and it goes straight to them.</p>
+
+  <!-- ─────────────────────────────── -->
+  <h2>The four tabs</h2>
+  <p>Changes show up on your site <b>within a minute</b>. No saving, no redeploying.</p>
+
+  <h3>Settings</h3>
+  <table class="card" style="padding:0">
+    <thead><tr><th>Setting</th><th>What it does</th></tr></thead>
+    <tbody>
+      <tr><td>Business name</td><td>Shown in the calendar event title and your heads-up email.</td></tr>
+      <tr><td>Meeting title</td><td>The name of the call, e.g. <code>Free 30-minute call</code>.</td></tr>
+      <tr><td>Time zone</td><td>The time zone your Hours are written in. Visitors still see times in their own zone.</td></tr>
+      <tr><td>Call length (minutes)</td><td>How long each call is.</td></tr>
+      <tr><td>Gap between calls (minutes)</td><td>Free time kept before and after every call <i>and</i> every busy event on your calendar.</td></tr>
+      <tr><td>Start times every (minutes)</td><td><code>30</code> offers 9:00, 9:30, 10:00. <code>60</code> offers only on the hour.</td></tr>
+      <tr><td>Minimum notice (hours)</td><td>Nobody can book sooner than this. <code>24</code> means no surprise calls tomorrow morning.</td></tr>
+      <tr><td>Book ahead (days)</td><td>How far into the future people can book.</td></tr>
+      <tr><td>Calendars to check</td><td>Busy times on these calendars block bookings. <code>primary</code> is your main calendar.</td></tr>
+      <tr><td>Calendar to book on</td><td>Where new calls get added. Leave it as <code>primary</code>.</td></tr>
+    </tbody>
+  </table>
+  <p class="hint">// only change the Value column. The names in column A are how the script finds each setting.</p>
+
+  <h3>Hours</h3>
+  <p>Your regular weekly hours. One row per day. <b>Blank start and end means closed.</b></p>
+  <table class="sheet">
+    <thead><tr><th>Day</th><th>Start</th><th>End</th></tr></thead>
+    <tbody>
+      <tr><td>Monday</td><td>9:00 AM</td><td>5:00 PM</td></tr>
+      <tr><td>Tuesday</td><td>9:00 AM</td><td>12:00 PM</td></tr>
+      <tr><td>Tuesday</td><td>1:00 PM</td><td>5:00 PM</td></tr>
+      <tr><td>Saturday</td><td></td><td></td></tr>
+    </tbody>
+  </table>
+  <p class="muted">Tuesday has two rows, so it's split with a lunch break. Saturday is closed. Times work as <code>9:00 AM</code> or <code>17:00</code>.</p>
+
+  <h3>Days off</h3>
+  <p>Add a date and that <b>whole day</b> closes. The note is just for you.</p>
+  <table class="sheet">
+    <thead><tr><th>Date</th><th>Note</th></tr></thead>
+    <tbody>
+      <tr><td>2026-10-12</td><td>Dentist</td></tr>
+      <tr><td>2026-11-26</td><td>Thanksgiving</td></tr>
+    </tbody>
+  </table>
+  <p class="muted">Type <code>10/12/2026</code> or <code>2026-10-12</code>. One row per day, so a week off is five rows. Delete the row to open the day back up.</p>
+
+  <h3>Bookings</h3>
+  <p>Written by the script. Add your own columns to the right if you like (status, notes, follow-up date), but don't rename or reorder the first ten.</p>
+
+  <!-- ─────────────────────────────── -->
+  <h2>How your calendar blocks time</h2>
+  <p>Anything on your calendar that shows as <b>Busy</b> blocks that time, plus the gap around it. A dentist appointment from 1 to 2 with a 30 minute gap closes 12:30 to 2:30.</p>
+  <div class="warn">
+    <p><strong>All-day events don't block anything.</strong> Google marks them "Free" by default. To take a whole day off, use the <b>Days off</b> tab. Or open the event and set <b>Show as: Busy</b>.</p>
+  </div>
+  <p><b>Want your personal calendar to count too?</b> Share it with your booking account (at least "See only free/busy"), find its <b>Calendar ID</b> in Google Calendar under <i>Settings &gt; that calendar &gt; Integrate calendar</i>, and add it to <b>Calendars to check</b>, separated by a comma: <code>primary, you@gmail.com</code>.</p>
+
+  <!-- ─────────────────────────────── -->
+  <h2>Everyday tasks</h2>
+
+  <div class="grid2">
+    <div class="card">
+      <h3>Move a call</h3>
+      <ol class="steps">
+        <li>Drag the event to the new time in Google Calendar.</li>
+        <li>When Google asks, click <b>Send</b> so they get the update.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3>Cancel a call</h3>
+      <ol class="steps">
+        <li>Open the event and click the trash can.</li>
+        <li>Click <b>Send</b> on the cancellation email.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3>Take a week off</h3>
+      <ol class="steps">
+        <li>Add each date to <b>Days off</b>.</li>
+        <li>Move or cancel anyone already booked that week.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3>Pause all bookings</h3>
+      <ol class="steps">
+        <li>Clear the Start and End cells on the <b>Hours</b> tab.</li>
+        <li>Your site shows "No open times". Put the hours back to reopen.</li>
+      </ol>
+    </div>
+  </div>
+  <p class="muted">If a guest declines the invite, Google emails you, same as any meeting.</p>
+
+  <!-- ─────────────────────────────── -->
+  <h2>If something looks off</h2>
+  <table class="card" style="padding:0">
+    <thead><tr><th>You see</th><th>Try this</th></tr></thead>
+    <tbody>
+      <tr><td>A time you're busy is still open</td><td>Is the event all-day, or set to Free? Is it on a calendar that isn't in <b>Calendars to check</b>? Changes take up to a minute.</td></tr>
+      <tr><td>The site says "Can't load open times"</td><td>In the Sheet, open <b>Extensions &gt; Apps Script</b>, pick <code>previewSlots</code> and click <b>Run</b>. The log shows what's wrong.</td></tr>
+      <tr><td>No heads-up email</td><td>Check spam. The booking still worked if the event is on your calendar and the row is on Bookings.</td></tr>
+      <tr><td>A tab went missing</td><td>Run <code>setup</code> in Apps Script. It recreates missing tabs and leaves the others alone.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="warn" style="border-left-color: var(--orange)">
+    <p><strong style="color: var(--orange-text)">Leave these alone:</strong> the tab names, the setting names in column A of Settings, and the Apps Script code. Everything you need to change lives in the Value column, Hours and Days off.</p>
+  </div>
+
+</main>
+</body>
+</html>

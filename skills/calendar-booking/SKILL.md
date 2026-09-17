@@ -135,9 +135,12 @@ Checkpoint: widget name, hostnames, site key recorded.
 3. Mount `<BookingModal />` once at the app root so every page can open it.
 4. Switch every booking button to `openBooking` (use `<button type="button">`).
    Remove the old tool's links; keep its URL only as `LEGACY_BOOKING_URL`.
-5. Test in stub mode (endpoint empty, `npm run dev`): every button opens it;
-   pick, fill, confirm; `?bookingStub=taken` shows the "just got booked"
-   notice; `?bookingStub=down` shows Try again; Esc, backdrop, Tab trap, focus
+5. Test in stub mode (`npm run dev`; the stub runs when the endpoint is empty,
+   or with any `?bookingStub=` in dev): every button opens it; pick, fill,
+   confirm; `?bookingStub=slow` shows "Finding open times" with placeholders,
+   then "Still looking" after 6 seconds; `?bookingStub=taken` shows the "just
+   got booked" notice and "checking for new openings"; `?bookingStub=down`
+   shows Try again; Esc, backdrop, Tab trap, focus
    return; 375px phone sheet with no sideways scroll. The preview pane's tab
    may be throttled (gotcha 12).
 6. Put the real endpoint in the config. `npm run build`, then build a clean

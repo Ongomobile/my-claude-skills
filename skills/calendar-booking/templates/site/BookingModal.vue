@@ -32,14 +32,16 @@ const props = defineProps({
 
 const { isOpen, closeBooking } = useBooking();
 
-const stubMode = !BOOKING_ENDPOINT;
+// In dev, ?bookingStub=slow|taken|down (or any value) forces the stub even
+// when a real endpoint is set, so every state can be checked locally.
+const stubParam = import.meta.env.DEV
+  ? new URLSearchParams(window.location.search).get("bookingStub")
+  : null;
+const stubMode = !BOOKING_ENDPOINT || stubParam !== null;
 const client = !bookingLive
   ? null
   : stubMode
-  ? createStubBookingClient({
-      mode:
-        new URLSearchParams(window.location.search).get("bookingStub") || "",
-    })
+  ? createStubBookingClient({ mode: stubParam || "" })
   : createBookingClient({ endpoint: BOOKING_ENDPOINT });
 
 const SLOTS_FRESH_MS = 60000;
@@ -50,6 +52,7 @@ const step = ref("time"); // time | details | done
 const slots = ref([]);
 const slotsLoadedAt = ref(0);
 const loading = ref(false);
+const slowLoad = ref(false);
 const loadError = ref(false);
 const selectedDayKey = ref("");
 const selectedStart = ref("");
@@ -208,6 +211,14 @@ watch(isOpen, async (open) => {
   }
 });
 
+// Apps Script often takes a few seconds. Past 6, say so.
+let slowTimer = null;
+watch(loading, (value) => {
+  clearTimeout(slowTimer);
+  slowLoad.value = false;
+  if (value) slowTimer = setTimeout(() => (slowLoad.value = true), 6000);
+});
+
 // Move focus with the step, and start the bot check when the form shows.
 watch(step, async (value) => {
   await nextTick();
@@ -236,6 +247,7 @@ function removeTurnstile() {
 }
 
 onBeforeUnmount(() => {
+  clearTimeout(slowTimer);
   removeTurnstile();
   document.documentElement.style.overflow = "";
   document.body.style.paddingRight = "";
@@ -320,10 +332,36 @@ function onKeydown(event) {
 
               <div
                 v-if="loading && !hasAnySlots"
-                class="bk-skeleton"
-                aria-label="Loading open times"
+                class="bk-loading"
+                role="status"
+                aria-live="polite"
               >
-                <span v-for="n in 14" :key="n" class="bk-skel-day"></span>
+                <p class="bk-loading-text">
+                  <span class="bk-dots" aria-hidden="true"
+                    ><span></span><span></span><span></span
+                  ></span>
+                  {{
+                    slowLoad
+                      ? "Still looking. This can take a few seconds."
+                      : "Finding open times"
+                  }}
+                </p>
+                <div class="bk-skeleton" aria-hidden="true">
+                  <span
+                    v-for="n in 14"
+                    :key="n"
+                    class="bk-skel-day"
+                    :style="{ '--n': n }"
+                  ></span>
+                </div>
+                <div class="bk-skel-times" aria-hidden="true">
+                  <span
+                    v-for="n in 8"
+                    :key="n"
+                    class="bk-skel-time"
+                    :style="{ '--n': n + 4 }"
+                  ></span>
+                </div>
               </div>
 
               <div v-else-if="loadError" class="bk-error" role="alert">
@@ -356,7 +394,15 @@ function onKeydown(event) {
               </div>
 
               <template v-else>
-                <h3 class="bk-label">Pick a day</h3>
+                <div class="bk-label-row">
+                  <h3 class="bk-label">Pick a day</h3>
+                  <span v-if="loading" class="bk-refreshing" role="status">
+                    <span class="bk-dots bk-dots-sm" aria-hidden="true"
+                      ><span></span><span></span><span></span
+                    ></span>
+                    checking for new openings
+                  </span>
+                </div>
                 <div class="bk-days">
                   <button
                     v-for="day in days"
@@ -770,25 +816,99 @@ textarea:focus-visible,
   box-shadow: 1px 1px 0 var(--bk-ink);
 }
 
+/* Loading: words first, then placeholder days and times in a soft wave */
+.bk-loading {
+  margin-top: 18px;
+}
+.bk-loading-text {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+}
+.bk-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.bk-dots span {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: var(--bk-accent);
+  border: 1.5px solid var(--bk-ink);
+  animation: bk-bounce 1s var(--bk-ease) infinite;
+}
+.bk-dots span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.bk-dots span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+@keyframes bk-bounce {
+  0%,
+  70%,
+  100% {
+    transform: translateY(0);
+  }
+  35% {
+    transform: translateY(-6px);
+  }
+}
 .bk-skeleton {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 8px;
-  margin-top: 20px;
+  margin-top: 16px;
+}
+.bk-skel-day,
+.bk-skel-time {
+  border: 1.5px dashed var(--bk-line);
+  background: var(--bk-soft);
+  animation: bk-wave 1.4s ease-in-out infinite;
+  animation-delay: calc(var(--n, 0) * 70ms);
 }
 .bk-skel-day {
   height: 68px;
   border-radius: 8px;
-  background: var(--bk-soft);
-  animation: bk-pulse 1.2s ease-in-out infinite alternate;
 }
-@keyframes bk-pulse {
-  from {
-    opacity: 0.5;
+.bk-skel-times {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: 8px;
+  margin-top: 22px;
+}
+.bk-skel-time {
+  height: 44px;
+  border-radius: var(--bk-radius-sm);
+}
+@keyframes bk-wave {
+  0%,
+  100% {
+    opacity: 0.4;
   }
-  to {
+  50% {
     opacity: 1;
   }
+}
+.bk-label-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.bk-refreshing {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--bk-font-mono);
+  font-size: 12px;
+  color: var(--bk-muted);
+}
+.bk-dots-sm span {
+  width: 6px;
+  height: 6px;
+  border-width: 1px;
 }
 
 .bk-error,
@@ -1005,8 +1125,13 @@ textarea:focus-visible,
     flex: 0 0 60px;
     scroll-snap-align: start;
   }
+  /* Mirror the swipeable day strip: one row, cut off at the edge */
   .bk-skeleton {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    display: flex;
+    overflow: hidden;
+  }
+  .bk-skel-day {
+    flex: 0 0 60px;
   }
   .bk-enter-from .bk-card,
   .bk-leave-to .bk-card {
@@ -1025,7 +1150,9 @@ textarea:focus-visible,
   .bk-close {
     transition: none;
   }
-  .bk-skel-day {
+  .bk-skel-day,
+  .bk-skel-time,
+  .bk-dots span {
     animation: none;
   }
 }

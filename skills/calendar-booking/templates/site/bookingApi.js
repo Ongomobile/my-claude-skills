@@ -93,7 +93,8 @@ async function request(url, init) {
 
 /**
  * A pretend backend for building the modal before the script is deployed.
- * mode "taken" rejects the first booking, "down" fails to load times.
+ * mode "taken" rejects the first booking, "down" fails to load times,
+ * "slow" takes 8 seconds to load times.
  */
 export function createStubBookingClient({ mode = "" } = {}) {
   const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -102,7 +103,7 @@ export function createStubBookingClient({ mode = "" } = {}) {
 
   return {
     async getSlots() {
-      await wait(600);
+      await wait(mode === "slow" ? 8000 : 600);
       if (mode === "down") throw new Error("stub: times unavailable");
       const now = Date.now();
       const today = new Date(now + offsetMinutes(now, timeZone) * 60000);
